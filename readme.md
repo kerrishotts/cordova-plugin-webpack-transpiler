@@ -27,6 +27,10 @@ After the plugin is added, you'll have two new configuration files in your proje
 
 > **Note:** If these files are already present in your project root, _they will not be modified_.
 
+### Plugin discovery during `prepare`
+
+If this plugin is discovered to be missing during the `prepare` phase, the command that triggered the `prepare` will be executed after installation. This currently occurs only with `prepare`, `build`, `run`, and `emulate`. The reason is because `before_prepare` is already missed by the time the discovery phase occurs, which means that the transformations this plugin performs cannot occur. This results in an incomplete project state (which might cause your build to be incorrect).
+
 ## Usage
 
 Place your TypeScript & ES2015+ files in `www/esm`, with `index.js` or `index.ts` as the entry to your app. If `index.ts` exists, it will be used as the preferred entry point, otherwise `index.js` will be used.
