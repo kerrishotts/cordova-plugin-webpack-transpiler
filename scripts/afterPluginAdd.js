@@ -19,14 +19,15 @@ module.exports = function(ctx) {
         events.emit("verbose", "not overwriting existing package.json!");
     }
 
+    // install dependencies
     events.emit("verbose", "npm install");
     if (shell.exec("npm install --save-dev webpack ts-loader typescript core-js").code !== 0) {
         events.emit("error", "Could not install dependencies; verify your internet connection");
         return;
     }
 
+    // copy configurations
     events.emit("info", "Copying webpack and typescript configurations");
-
     if ([["webpack config", "webpack.config.js"],
          ["typescript config", "tsconfig.json"]]
         .reduce(function cp(errAcc, asset) {
@@ -45,8 +46,17 @@ module.exports = function(ctx) {
                 return err;
             }
             return errAcc;
-        }, undefined) !== undefined) { return; };
+        }, undefined) !== undefined) { return; }
 
     events.emit("info", "Initialization completed successfully");
-    return;
+
+    // and if this happens to be during commands, rerun them so that everything looks like it should
+    if (["run", "emulate", "prepare", "build"].reduce(function (a, s) {
+        if (!a && ctx.cmdLine.toLowerCase().indexOf(s) > -1) {
+            return true;
+        }
+        return a;
+    }, false)) {
+        shell.exec(ctx.cmdLine);
+    }
 };
