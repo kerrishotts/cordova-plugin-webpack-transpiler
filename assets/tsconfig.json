@@ -1,13 +1,9 @@
 {
     "compilerOptions": {
         "allowJs": true,
-        "module": "es2015",
-        "inlineSourceMap": false,
-        "isolatedModules": true,
-        "noResolve": true,
-        "sourceMap": false,
         "target": "es5",
-        "lib": ["dom", "scripthost", "es2015", "es2016", "es2017", "es5"]
+        "module": "es2015",
+        "inlineSourceMap": true
     },
     "include": [
         "www/esm/**/*"
