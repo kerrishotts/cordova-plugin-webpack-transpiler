@@ -18,14 +18,14 @@ Add the plugin to your Cordova project:
 $ cordova plugin add cordova-plugin-webpack-typescript
 ```
 
-> **Note:** Adding this to your project will call `npm init` to create a `package.json` if it doesn't already exist. You'll almost certainly want to fix the generated file, so you should do so after adding.
+> **Note:** Adding this to your project will call `npm init` to create a `package.json` if it doesn't already exist. You'll almost certainly want to fix the generated file.
 
 After the plugin is added, you'll have two new configuration files in your project root:
 
 * `webpack.config.js` - the default configuration for webpack
 * `tsconfig.json` - the default typescript configuration
 
-> **Note:** If these files are already present in your project root, _they will not be modified_.
+> **Note:** If these files are already present in your project root, _they will not be modified_. If something isn't working as expected, check here!
 
 ### Plugin discovery during `prepare`
 
@@ -37,9 +37,7 @@ Place your TypeScript & ES2015+ files in `www/esm`, with `index.js` or `index.ts
 
 You should source `www/js/app.bundle.js` in your `www/index.html` file; the bundle will be named `www/js/app.bundle.js`.
 
-Prior to `cordova prepare`, your files in `www/esm` will be transpiled, and then bundled with webpack, with the output being copied to `www/js`.
-
-> **Note:** If, during this step, Cordova needs to install the plugin, the "before prepare" step will not occur. You'll need to execute another `cordova prepare` in order to get the plugin to work.
+Upon `cordova prepare` (or any command that invokes this step), your files in `www/esm` will be transpiled, and then bundled with webpack, with the output being copied to `www/js`.
 
 After the transformation, the JavaScript or TypeScript files in each platform's `www/esm` folder will be removed. The project root's `www/esm` folder remains intact. This is to avoid copying unnecessary files to the application bundle when built.
 
@@ -52,11 +50,11 @@ The plugin watches for a `--release` switch on the command line; if it is detect
 
 If you need to change this behavior, you can override it by copying `webpack.config.js` in your project root to `webpack.release.config.js` and making the desired changes.
 
-> **Note:** Webpack will currently throw a warning due to the way UglifyJS works.
+> **Note:** When using release mode, Webpack will currently throw a warning due to the way UglifyJS works. You can ignore the warning.
 
 ### Modifying the configuration files
 
-If you wish to modify `webpack.config.js`, `webpack.release.config.js`, or `tsconfig.json`, you can. The plugin will not attempt to override their contents, and it won't attempt to overwrite the files on a reinstall.
+If you wish to modify `webpack.config.js`, `webpack.release.config.js`, or `tsconfig.json`, you can. The plugin will not attempt to override their contents, and it won't attempt to overwrite the files on a reinstall. If you need to reset these configuration files, delete them and reinstall the plugin.
 
 ## Removing the plugin
 
@@ -67,6 +65,10 @@ If you find that you need to remove the plugin, you can remove it via `cordova p
 * `tsconfig.json`
 * `webpack.config.js`
 * `webpack.release.config.js`
+
+# Example
+
+See [Example project](./example). Note that the example project uses `../` to install the plugin, not the plugin name. Your projects will use the plugin identifier instead.
 
 # License
 
