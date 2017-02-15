@@ -1,0 +1,10 @@
+.vscode
+.git
+example/hooks
+example/platforms
+example/plugins
+example/package.json
+example/tsconfig.json
+example/webpack.config.js
+example/www/js
+example/node_modules
