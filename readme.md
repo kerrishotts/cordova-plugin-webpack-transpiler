@@ -35,13 +35,13 @@ If this plugin is discovered to be missing during the `prepare` phase, the comma
 
 Place your TypeScript & ES2015+ files in `www/esm`, with `index.js` or `index.ts` as the entry to your app. If `index.ts` exists, it will be used as the preferred entry point, otherwise `index.js` will be used.
 
-You should source `www/js/index.js` in your `www/index.html` file; the bundle will be named `www/js/index.js`.
+You should source `www/js/app.bundle.js` in your `www/index.html` file; the bundle will be named `www/js/app.bundle.js`.
 
 Prior to `cordova prepare`, your files in `www/esm` will be transpiled, and then bundled with webpack, with the output being copied to `www/js`.
 
 > **Note:** If, during this step, Cordova needs to install the plugin, the "before prepare" step will not occur. You'll need to execute another `cordova prepare` in order to get the plugin to work.
 
-Before any compilation occurs, the JavaScript or TypeScript files in each platform's `www/esm` folder will be removed. The project root's `www/esm` folder remains intact. This is to avoid copying unnecessary files to the application bundle when built.
+After the transformation, the JavaScript or TypeScript files in each platform's `www/esm` folder will be removed. The project root's `www/esm` folder remains intact. This is to avoid copying unnecessary files to the application bundle when built.
 
 ### Debug vs Release
 
@@ -51,6 +51,8 @@ The plugin watches for a `--release` switch on the command line; if it is detect
 * Sourcemaps are turned off
 
 If you need to change this behavior, you can override it by copying `webpack.config.js` in your project root to `webpack.release.config.js` and making the desired changes.
+
+> **Note:** Webpack will currently throw a warning due to the way UglifyJS works.
 
 ### Modifying the configuration files
 
