@@ -8,5 +8,5 @@
     <license>Apache 2.0</license>
     <hook type="after_plugin_add" src="scripts/afterPluginAdd.js" />
     <hook type="before_prepare" src="scripts/beforePrepare.js" />
-    <hook type="before_compile" src="scripts/beforeCompile.js" />
+    <hook type="after_prepare" src="scripts/afterPrepare.js" />
 </plugin>
