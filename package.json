@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-webpack-typescript",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Transpile TypeScript and bundle with WebPack",
   "cordova": {
     "id": "cordova-plugin-webpack-typescript",
