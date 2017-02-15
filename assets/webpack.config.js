@@ -1,11 +1,12 @@
 var path = require("path"),
-    fs = require("fs"),
-    wwwFolder = path.resolve(__dirname, "www"),
-    entryPath = path.resolve(wwwFolder, "esm");
+    fs = require("fs");
+
+var wwwFolder = path.resolve(__dirname, "www"),
+    entryPath = path.resolve(wwwFolder, "esm"),
     tsEntry = path.resolve(entryPath, "index.ts"),
     jsEntry = path.resolve(entryPath, "index.js"),
     outputPath = path.resolve(wwwFolder, "js"),
-    jsBundleName = "index.js",
+    jsBundleName = "app.bundle.js",
     entryFile = fs.existsSync(tsEntry) ? tsEntry : jsEntry;
 
 module.exports = {
@@ -20,7 +21,7 @@ module.exports = {
         loaders: [
             {
                 test: /\.(ts|js)$/,
-                loader: 'ts-loader',
+                loader: "ts-loader",
                 exclude: /node_modules/,
                 options: {
                     entryFileIsJs: entryFile === jsEntry
