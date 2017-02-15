@@ -3,13 +3,13 @@
 module.exports = function(ctx) {
     var shell = ctx.requireCordovaModule("shelljs"),
         path = ctx.requireCordovaModule("path"),
-        fs = ctx.requireCordovaModule("fs"),
         events = ctx.requireCordovaModule("cordova-common").events;
+    var filesToDelete;
 
     if (ctx.opts.projectRoot) {
         events.emit("info", "Removing bundle artifacts from prepared platforms...");
         try {
-            var filesToDelete = shell.find(path.join(ctx.opts.projectRoot))
+            filesToDelete = shell.find(path.join(ctx.opts.projectRoot))
                           .filter(function(file) {
                               return file.match(/platforms[\/|\\].+[\/|\\]www[\/|\\]esm[\/|\\].+\.(js|ts)$/);
                           });
