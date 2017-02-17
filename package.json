@@ -1,17 +1,19 @@
 {
-  "name": "cordova-plugin-webpack-typescript",
+  "name": "cordova-plugin-webpack-transpiler",
   "version": "0.1.0",
-  "description": "Transpile TypeScript and bundle with WebPack",
+  "description": "Transpile and bundle with WebPack",
   "cordova": {
-    "id": "cordova-plugin-webpack-typescript",
+    "id": "cordova-plugin-webpack-transpiler",
     "platforms": []
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kerrishotts/cordova-plugin-webpack-typescript.git"
+    "url": "git+https://github.com/kerrishotts/cordova-plugin-webpack-transpiler.git"
   },
   "keywords": [
     "cordova",
+    "babel",
+    "transpile",
     "typescript",
     "webpack",
     "es2015",
@@ -21,7 +23,7 @@
   "author": "Kerri Shotts (kerrishotts@gmail.com)",
   "license": "Apache 2.0",
   "bugs": {
-    "url": "https://github.com/kerrishotts/cordova-plugin-webpack-typescript/issues"
+    "url": "https://github.com/kerrishotts/cordova-plugin-webpack-transpiler/issues"
   },
-  "homepage": "https://github.com/kerrishotts/cordova-plugin-webpack-typescript#readme"
+  "homepage": "https://github.com/kerrishotts/cordova-plugin-webpack-transpiler#readme"
 }
