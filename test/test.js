@@ -79,7 +79,7 @@ describe ("Black box tests", function () {
     describe("Create project using default configuration", function() {
         this.timeout(1200000); // 2 minutes
         it("Should be able to create and transpile a simple Cordova project", createCordovaProject);
-        it("Should be able to add this plugin", addPlugin);
+        it("Should be able to add this plugin", addPlugin.bind(this, undefined, undefined));
         it("Should be able to transpile", function() {
             transpile("example-ts", "typescript", "sibling");
             removeCordovaProject();
@@ -106,4 +106,23 @@ describe ("Black box tests", function () {
         });
     });
 
+    describe("Create project using typescript & external", function() {
+        this.timeout(1200000); // 2 minutes
+        it("Should be able to create and transpile a simple Cordova project", createCordovaProject);
+        it("Should be able to add this plugin", addPlugin.bind(this, "typescript", "external"));
+        it("Should be able to transpile", function() {
+            transpile("example-ts", "typescript", "sibling");
+            removeCordovaProject();
+        });
+    });
+
+    describe("Create project using babel & external", function() {
+        this.timeout(1200000); // 2 minutes
+        it("Should be able to create and transpile a simple Cordova project", createCordovaProject);
+        it("Should be able to add this plugin", addPlugin.bind(this, "babel", "external"));
+        it("Should be able to transpile", function() {
+            transpile("example-babel", "babel", "sibling");
+            removeCordovaProject();
+        });
+    });
 });
