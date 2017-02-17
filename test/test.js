@@ -76,35 +76,33 @@ function transpile(whichExample, transpiler, mode) {
 
 describe ("Black box tests", function () {
 
-    afterEach(function() {
-        removeCordovaProject();
-    });
-
-    beforeEach(function() {
-        this.timeout(1200000); // 2 minutes
-    })
-
     describe("Create project using default configuration", function() {
+        this.timeout(1200000); // 2 minutes
         it("Should be able to create and transpile a simple Cordova project", createCordovaProject);
         it("Should be able to add this plugin", addPlugin);
         it("Should be able to transpile", function() {
             transpile("example-ts", "typescript", "sibling");
+            removeCordovaProject();
         });
     });
 
     describe("Create project using typescript & sibling", function() {
+        this.timeout(1200000); // 2 minutes
         it("Should be able to create and transpile a simple Cordova project", createCordovaProject);
         it("Should be able to add this plugin", addPlugin.bind(this, "typescript", "sibling"));
         it("Should be able to transpile", function() {
             transpile("example-ts", "typescript", "sibling");
+            removeCordovaProject();
         });
     });
 
     describe("Create project using babel & sibling", function() {
+        this.timeout(1200000); // 2 minutes
         it("Should be able to create and transpile a simple Cordova project", createCordovaProject);
         it("Should be able to add this plugin", addPlugin.bind(this, "babel", "sibling"));
         it("Should be able to transpile", function() {
             transpile("example-babel", "babel", "sibling");
+            removeCordovaProject();
         });
     });
 
