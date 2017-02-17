@@ -1,11 +1,15 @@
-<?xml version='0.1.0' encoding='utf-8'?>
-<plugin id="cordova-plugin-webpack-typescript" version="1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
-    <name>WebpackTypescriptBundler</name>
-    <description>Transpile TypeScript and bundle with WebPack</description>
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-webpack-transpiler" version="0.1.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>WebpackTranspilerBundler</name>
+    <description>Transpile and bundle with WebPack</description>
     <author>Kerri Shotts (kerrishotts@gmail.com)</author>
-    <keywords>cordova, typescript, webpack, es2015, es6</keywords>
-    <repo>https://github.com/kerrishotts/cordova-plugin-webpack-typescript</repo>
+    <keywords>cordova, typescript, babel, transpile, bundle, webpack, es2015, es6</keywords>
+    <repo>https://github.com/kerrishotts/cordova-plugin-webpack-transpiler</repo>
     <license>Apache 2.0</license>
+
+    <preference name="TRANSPILER" default="typescript" />
+    <preference name="MODE" default="sibling" />
+
     <hook type="after_plugin_add" src="scripts/afterPluginAdd.js" />
     <hook type="before_prepare" src="scripts/beforePrepare.js" />
     <hook type="after_prepare" src="scripts/afterPrepare.js" />
