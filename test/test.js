@@ -9,6 +9,8 @@ describe("Create project using default configuration", function() {
     var pluginDir = process.cwd();
     var tmp = tempdir();
 
+    this.timeout(30000);
+
     it("Should be able to create and transpile a simple Cordova project", function() {
         cd(tmp);
         exec("cordova create test com.example.test test --verbose");
