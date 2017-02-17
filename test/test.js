@@ -17,24 +17,23 @@ describe("Create project using default configuration", function() {
         cd("test");
         exec("cordova platform add ios --verbose");
         expect(ls("*.*").length).to.be.greaterThan(0);
+    });
 
-        it ("Should be able to add this plugin", function() {
-            exec("cordova plugin add --verbose --save " + pluginDir);
-            expect(ls("plugins/cordova-plugin-webpack-transpiler/*.*").length).to.be.greaterThan(0);
-        });
+    it ("Should be able to add this plugin", function() {
+        exec("cordova plugin add --verbose --save " + pluginDir);
+        expect(ls("plugins/cordova-plugin-webpack-transpiler/*.*").length).to.be.greaterThan(0);
+    });
 
-        it ("Should be able to transpile by default", function() {
-            // copy assets first
-            cp("-rf", path.join(pluginDir, "example-ts", "www", "esm"), path.join(tmp, "test", "www"));
+    it ("Should be able to transpile by default", function() {
+        // copy assets first
+        cp("-rf", path.join(pluginDir, "example-ts", "www", "esm"), path.join(tmp, "test", "www"));
 
-            exec("cordova prepare --verbose");
+        exec("cordova prepare --verbose");
 
-            // check outputs
-            expect(ls("www/js/app.bundle.js").length).to.be.equal(1);
-            expect(ls("platforms/ios/www/js/app.bundle.js").length).to.be.equal(1);
-            expect(ls("platforms/ios/www/esm").length).to.be.equal(0);
-        });
-
+        // check outputs
+        expect(ls("www/js/app.bundle.js").length).to.be.equal(1);
+        expect(ls("platforms/ios/www/js/app.bundle.js").length).to.be.equal(1);
+        expect(ls("platforms/ios/www/esm").length).to.be.equal(0);
     });
 
 });
