@@ -11,9 +11,9 @@ var tmp = tempdir();
 function createCordovaProject() {
     var name = "test";
     cd(tmp);
-    exec("cordova create " + name + " com.example." + name + " " + name + " --verbose");
+    exec("cordova create " + name + " com.example." + name + " " + name + " ");
     cd("test");
-    exec("cordova platform add ios --verbose");
+    exec("cordova platform add ios ");
     expect(ls("*.*").length).to.be.greaterThan(0);
 }
 
@@ -24,13 +24,13 @@ function removeCordovaProject() {
 
 function addPlugin(transpiler, mode) {
     if (!transpiler && !mode) {
-        exec("cordova plugin add --verbose --save " + pluginDir);
+        exec("cordova plugin add --save " + pluginDir);
         transpiler = "typescript";
         mode = "sibling";
     } else {
         if (!transpiler) { transpiler = "typescript"; }
         if (!mode) { mode = "sibling"; }
-        exec("cordova plugin add --verbose --save " + pluginDir + " --variable TRANSPILER=" + transpiler + " --variable MODE=" + mode);
+        exec("cordova plugin add --save " + pluginDir + " --variable TRANSPILER=" + transpiler + " --variable MODE=" + mode);
     }
     expect(ls("plugins/cordova-plugin-webpack-transpiler/*.*").length).to.be.greaterThan(0);
 }
@@ -70,7 +70,8 @@ function checkTranspileOutputs(transpiler) {
 
 function transpile(whichExample, transpiler, mode) {
     copyAssets(whichExample, mode);
-    exec("cordova prepare --verbose");
+    var r = exec("cordova prepare");
+    expect(r.stdout.test(/app\.bundle\.js.*emitted/)).to.be.true();
     checkTranspileOutputs(transpiler);
 }
 
