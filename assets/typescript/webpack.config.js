@@ -2,7 +2,9 @@ var path = require("path"),
     fs = require("fs");
 
 var wwwFolder = path.resolve(__dirname, "www"),
-    entryPath = path.resolve(wwwFolder, "esm"),
+    siblingESFolder = path.resolve(wwwFolder, "esm"),
+    externalESFolder = path.resolve(__dirname, "esm"),
+    entryPath = fs.existsSync(externalESFolder) ? externalESFolder : siblingESFolder,
     tsEntry = path.resolve(entryPath, "index.ts"),
     jsEntry = path.resolve(entryPath, "index.js"),
     outputPath = path.resolve(wwwFolder, "js"),

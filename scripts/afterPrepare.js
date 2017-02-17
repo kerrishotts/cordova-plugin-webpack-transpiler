@@ -1,9 +1,19 @@
 #!/usr/bin/env node
 
+var common = require("./common.js");
+
 module.exports = function(ctx) {
     var shell = ctx.requireCordovaModule("shelljs"),
         path = ctx.requireCordovaModule("path"),
         events = ctx.requireCordovaModule("cordova-common").events;
+
+    var vars = common.getPluginVariables(ctx);
+
+    if (vars.mode !== "sibling") {
+        // no need to delete anything!
+        return;
+    }
+
     var filesToDelete;
 
     if (ctx.opts.projectRoot) {
