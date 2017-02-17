@@ -25,5 +25,13 @@
   "bugs": {
     "url": "https://github.com/kerrishotts/cordova-plugin-webpack-transpiler/issues"
   },
-  "homepage": "https://github.com/kerrishotts/cordova-plugin-webpack-transpiler#readme"
+  "homepage": "https://github.com/kerrishotts/cordova-plugin-webpack-transpiler#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "shelljs": "^0.7.6"
+  },
+  "scripts": {
+    "test": "mocha"
+  }
 }
