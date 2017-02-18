@@ -10,7 +10,7 @@ var wwwFolder = path.resolve(__dirname, "www"),
     entryFile = path.resolve(entryPath, "index.js");
 
 module.exports = {
-    context: wwwFolder,
+    context: entryPath,
     entry: entryFile,
     devtool: "inline-source-map",
     output: {

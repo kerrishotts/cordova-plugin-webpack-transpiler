@@ -12,7 +12,7 @@ var wwwFolder = path.resolve(__dirname, "www"),
     entryFile = fs.existsSync(tsEntry) ? tsEntry : jsEntry;
 
 module.exports = {
-    context: wwwFolder,
+    context: entryPath,
     entry: entryFile,
     devtool: "inline-source-map",
     output: {
