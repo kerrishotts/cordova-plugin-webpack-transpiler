@@ -72,45 +72,46 @@ function checkTranspileOutputs(transpiler) {
 function transpile(whichExample, transpiler, mode) {
     copyAssets(whichExample, mode);
     var r = exec("cordova prepare");
-    expect(r.stdout.test(/app\.bundle\.js.*emitted/)).to.be.true();
+    expect(r.stdout.match(/app\.bundle\.js.*emitted/)).to.not.be.null();
     checkTranspileOutputs(transpiler);
 }
 
 describe ("Black box tests", function () {
 
-    beforeEach("set timeout", function() {
+    describe("Create project using default configuration", function() {
         this.timeout(1200000); // 2 minutes
-    });
-
-    it("Create project using default configuration", function() {
         it("Should be able to create a Cordova project", function() { createCordovaProject(); });
         it("Should be able to add this plugin", function() { addPlugin(); });
         it("Should be able to transpile", function() { transpile("example-ts", "typescript", "sibling"); });
         it("Clean up", function() { removeCordovaProject(); });
     });
 
-    it("Create project using typescript & sibling", function() {
+    describe("Create project using typescript & sibling", function() {
+        this.timeout(1200000); // 2 minutes
         it("Should be able to create a Cordova project", function() { createCordovaProject(); });
         it("Should be able to add this plugin", function() { addPlugin("typescript", "sibling"); });
         it("Should be able to transpile", function() { transpile("example-ts", "typescript", "sibling"); });
         it("Clean up", function() { removeCordovaProject(); });
     });
 
-    it("Create project using babel & sibling", function() {
+    describe("Create project using babel & sibling", function() {
+        this.timeout(1200000); // 2 minutes
         it("Should be able to create a Cordova project", function() { createCordovaProject(); });
         it("Should be able to add this plugin", function() { addPlugin("babel", "sibling"); });
         it("Should be able to transpile", function() { transpile("example-babel", "babel", "sibling"); });
         it("Clean up", function() { removeCordovaProject(); });
     });
 
-    it("Create project using typescript & external", function() {
+    describe("Create project using typescript & external", function() {
+        this.timeout(1200000); // 2 minutes
         it("Should be able to create a Cordova project", function() { createCordovaProject(); });
         it("Should be able to add this plugin", function() { addPlugin("typescript", "external"); });
         it("Should be able to transpile", function() { transpile("example-ts", "typescript", "external"); });
         it("Clean up", function() { removeCordovaProject(); });
     });
 
-    it("Create project using babel & external", function() {
+    describe("Create project using babel & external", function() {
+        this.timeout(1200000); // 2 minutes
         it("Should be able to create a Cordova project", function() { createCordovaProject(); });
         it("Should be able to add this plugin", function() { addPlugin("babel", "external"); });
         it("Should be able to transpile", function() { transpile("example-babel", "babel", "external"); });
