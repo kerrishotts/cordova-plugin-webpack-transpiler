@@ -31,6 +31,8 @@ function addPlugin(transpiler, mode) {
         if (!mode) { mode = "sibling"; }
         exec("cordova plugin add --save " + pluginDir + " --variable TRANSPILER=" + transpiler + " --variable MODE=" + mode);
     }
+
+    // we'd expect some files here
     expect(ls("plugins/cordova-plugin-webpack-transpiler/*.*").length).to.be.greaterThan(0);
 }
 
@@ -48,7 +50,8 @@ function copyAssets(whichExample, mode) {
     }
 }
 
-function checkTranspileOutputs(transpiler) {
+function checkTranspileOutputs(transpiler, r, shouldHaveInited) {
+    var regexp, matches;
     // make sure configuration is present
     expect(ls("webpack.config.js").length).to.be.greaterThan(0);
     switch (transpiler) {
@@ -62,59 +65,92 @@ function checkTranspileOutputs(transpiler) {
     }
 
     // make sure transpilation happened
-    it("should have generated a bundle", function() {
-        expect(ls(path.join(tmp, "www","js","app.bundle.js")).length).to.be.equal(1);
-    });
+    expect(ls(path.join(tmp, "www","js","app.bundle.js")).length).to.be.equal(1);
     expect(ls("platforms/ios/www/js/app.bundle.js").length).to.be.equal(1);
     expect(ls("platforms/ios/www/esm").length).to.be.equal(0);
+
+    // check for correct output -- did anything get emitted? Was it big enough?
+    regexp = new RegExp("app\.bundle\.js.*([\d|\.]+).*kB.*emitted");
+    matches = regexp.exec(r.stdout);
+    expect(matches).to.not.be.null;
+    if (matches) {
+        expect(parseInt(matches[1], 10)).to.be.greaterThan(1);
+    }
+
+    // check the output too -- looking for Wrote to ... package.json if shouldHaveInited is true
+    regexp = new RegExp("Wrote to.*package.json");
+    matches = regexp.exec(r.stdout);
+    if (shouldHaveInited) {
+        expect(matches).to.not.be.null;
+    } else {
+        expect(matches).to.be.null;
+    }
 }
 
-function transpile(whichExample, transpiler, mode) {
+function transpile(whichExample, transpiler, mode, shouldHaveInited) {
+    var r;
+    if (shouldHaveInited === undefined) {
+        shouldHaveInited = true;
+    }
+
     copyAssets(whichExample, mode);
-    var r = exec("cordova prepare");
-    expect(r.stdout.match(/app\.bundle\.js.*emitted/)).to.not.be.null();
-    checkTranspileOutputs(transpiler);
+    r = exec("cordova prepare");
+
+    checkTranspileOutputs(transpiler, r, shouldHaveInited);
 }
 
 describe ("Black box tests", function () {
 
-    describe("Create project using default configuration", function() {
-        this.timeout(1200000); // 2 minutes
-        it("Should be able to create a Cordova project", function() { createCordovaProject(); });
-        it("Should be able to add this plugin", function() { addPlugin(); });
-        it("Should be able to transpile", function() { transpile("example-ts", "typescript", "sibling"); });
-        it("Clean up", function() { removeCordovaProject(); });
-    });
-
-    describe("Create project using typescript & sibling", function() {
-        this.timeout(1200000); // 2 minutes
-        it("Should be able to create a Cordova project", function() { createCordovaProject(); });
-        it("Should be able to add this plugin", function() { addPlugin("typescript", "sibling"); });
-        it("Should be able to transpile", function() { transpile("example-ts", "typescript", "sibling"); });
-        it("Clean up", function() { removeCordovaProject(); });
-    });
-
-    describe("Create project using babel & sibling", function() {
-        this.timeout(1200000); // 2 minutes
-        it("Should be able to create a Cordova project", function() { createCordovaProject(); });
-        it("Should be able to add this plugin", function() { addPlugin("babel", "sibling"); });
-        it("Should be able to transpile", function() { transpile("example-babel", "babel", "sibling"); });
-        it("Clean up", function() { removeCordovaProject(); });
-    });
-
-    describe("Create project using typescript & external", function() {
-        this.timeout(1200000); // 2 minutes
-        it("Should be able to create a Cordova project", function() { createCordovaProject(); });
-        it("Should be able to add this plugin", function() { addPlugin("typescript", "external"); });
-        it("Should be able to transpile", function() { transpile("example-ts", "typescript", "external"); });
-        it("Clean up", function() { removeCordovaProject(); });
-    });
-
-    describe("Create project using babel & external", function() {
-        this.timeout(1200000); // 2 minutes
-        it("Should be able to create a Cordova project", function() { createCordovaProject(); });
-        it("Should be able to add this plugin", function() { addPlugin("babel", "external"); });
-        it("Should be able to transpile", function() { transpile("example-babel", "babel", "external"); });
-        it("Clean up", function() { removeCordovaProject(); });
+    [
+        {
+            name: "default configuration",
+            addPluginParms: false,
+            example: "example-ts",
+            transpiler: "typescript",
+            mode: "sibling"
+        },
+        {
+            name: "typescript:sibling",
+            addPluginParms: true,
+            example: "example-ts",
+            transpiler: "typescript",
+            mode: "sibling"
+        },
+        {
+            name: "babel:sibling",
+            addPluginParms: true,
+            example: "example-babel",
+            transpiler: "sibling",
+            mode: "sibling"
+        },
+        {
+            name: "typescript:external",
+            addPluginParms: true,
+            example: "example-ts",
+            transpiler: "typescript",
+            mode: "external"
+        },
+        {
+            name: "babel:external",
+            addPluginParms: true,
+            example: "example-babel",
+            transpiler: "babel",
+            mode: "external"
+        },
+    ].forEach(function (test) {
+        describe("Create project using " + test.name, function() {
+            this.timeout(1200000); // 2 minutes
+            it("Should be able to create a Cordova project", function() { createCordovaProject(); });
+            it("Should be able to add this plugin", function() {
+                if (test.addPluginParms) {
+                    addPlugin(test.transpiler, test.mode);
+                } else {
+                    addPlugin();
+                }
+            });
+            it("Should be able to transpile", function() { transpile(test.example, test.transpiler, test.mode); });
+            it("Should be able to transpile again (no init)", function() { transpile(test.example, test.transpiler, test.mode, false); });
+            it("Clean up", function() { removeCordovaProject(); });
+        });
     });
 });
