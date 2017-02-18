@@ -10,7 +10,6 @@
     <preference name="TRANSPILER" default="typescript" />
     <preference name="MODE" default="sibling" />
 
-    <!--<hook type="after_plugin_add" src="scripts/afterPluginAdd.js" />-->
     <hook type="before_prepare" src="scripts/beforePrepare.js" />
     <hook type="after_prepare" src="scripts/afterPrepare.js" />
 </plugin>
