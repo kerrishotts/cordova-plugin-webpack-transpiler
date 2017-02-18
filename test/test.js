@@ -79,7 +79,7 @@ function checkTranspileOutputs(transpiler, r, shouldHaveInited) {
     expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "esm", "*.*")).length).to.be.equal(0);
 
     // check for correct output -- did anything get emitted? Was it big enough?
-    regexp = new RegExp("app\.bundle\.js.*([\d|\.]+).*kB.*emitted");
+    regexp = /Chunk\ Names\sapp\.bundle\.js\s*([\d|\.]+)\s*kB.*emitted/gmi;
     matches = regexp.exec(r.stdout);
     expect(matches).to.not.be.null;
     if (matches) {
@@ -131,7 +131,7 @@ describe ("Black box tests", function () {
             name: "babel:sibling",
             addPluginParms: true,
             example: "example-babel",
-            transpiler: "sibling",
+            transpiler: "babel",
             mode: "sibling"
         },
         {
