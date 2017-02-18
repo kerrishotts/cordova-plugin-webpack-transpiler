@@ -96,16 +96,20 @@ function checkTranspileOutputs(transpiler, r, shouldHaveInited) {
     }
 }
 
-function transpile(whichExample, transpiler, mode, shouldHaveInited) {
+function transpile(whichExample, transpiler, mode, shouldHaveInited, releaseMode) {
     var r;
     if (shouldHaveInited === undefined) {
         shouldHaveInited = true;
     }
 
-    copyAssets(whichExample, mode);
     removeBundle(); // so we can be sure later that anything generated is really from this next run
+    copyAssets(whichExample, mode);
 
-    r = exec("cordova prepare");
+    if (releaseMode) {
+        r = exec("cordova prepare --verbose --release");
+    } else {
+        r = exec("cordova prepare --verbose");
+    }
 
     checkTranspileOutputs(transpiler, r, shouldHaveInited);
 }
@@ -161,6 +165,7 @@ describe ("Black box tests", function () {
             });
             it("Should be able to transpile", function() { transpile(test.example, test.transpiler, test.mode); });
             it("Should be able to transpile again (no init)", function() { transpile(test.example, test.transpiler, test.mode, false); });
+            it("Should be able to transpile in release mode (no init)", function() { transpile(test.example, test.transpiler, test.mode, false, true); });
             it("Clean up", function() { removeCordovaProject(); });
         });
     });

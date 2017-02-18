@@ -71,7 +71,6 @@ module.exports = function(ctx) {
         var prettyStats = stats.toString({chunks: false, colors: false});
         if (err || stats.hasErrors() || stats.hasWarnings()) {
             if (err) {
-                events.emit("error", "Webpack generated an error!");
                 events.emit("error", prettyPrint(err.stack || err));
                 if (err.details) {
                     events.emit("error", prettyPrint(err.details));
@@ -79,17 +78,12 @@ module.exports = function(ctx) {
                 deferral.reject(err);
             }
             if (stats.hasErrors()) {
-                events.emit("error", "Webpack generated an error!");
                 events.emit("error", prettyStats);
                 deferral.reject(stats);
             }
-            if (stats.hasWarnings()) {
-                events.emit("warn", "Webpack generated warnings!");
-                events.emit("warn", prettyStats);
-            }
         }
         events.emit("info", "... webpack bundling and typescript transpilation phase complete!");
-        events.emit("info", prettyStats);
+        events.emit(stats.hasWarnings() ? "warn" : "info", prettyStats);
         deferral.resolve();
     });
 
