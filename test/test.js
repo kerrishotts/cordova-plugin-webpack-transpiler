@@ -83,7 +83,7 @@ function checkTranspileOutputs(transpiler, r, shouldHaveInited) {
     matches = regexp.exec(r.stdout);
     expect(matches).to.not.be.null;
     if (matches) {
-        expect(parseInt(matches[1], 10)).to.be.greaterThan(1);
+        expect(parseInt(matches[1], 10)).to.be.greaterThan(0.5);
     }
 
     // check the output too -- looking for Wrote to ... package.json if shouldHaveInited is true
