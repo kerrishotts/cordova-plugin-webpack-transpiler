@@ -21,6 +21,10 @@ function removeCordovaProject() {
     rm("-rf", path.join(tmp, PROJECT_NAME));
 }
 
+function removeBundle() {
+    rm("-f", path.join(tmp, PROJECT_NAME, "www", "js", "app.bundle.js"));
+}
+
 function addPlugin(transpiler, mode) {
     if (!transpiler && !mode) {
         exec("cordova plugin add --save " + pluginDir);
@@ -52,22 +56,27 @@ function copyAssets(whichExample, mode) {
 
 function checkTranspileOutputs(transpiler, r, shouldHaveInited) {
     var regexp, matches;
+
     // make sure configuration is present
-    expect(ls("webpack.config.js").length).to.be.greaterThan(0);
+    expect(ls(path.join(tmp, PROJECT_NAME, "webpack.config.js")).length).to.be.greaterThan(0);
     switch (transpiler) {
         case "babel":
-            expect(ls(".babelrc").length).to.be.greaterThan(0);
+            expect(ls(path.join(tmp, PROJECT_NAME, ".babelrc")).length).to.be.greaterThan(0);
             break;
         case "typescript":
         default:
-            expect(ls("tsconfig.json").length).to.be.greaterThan(0);
+            expect(ls(path.join(tmp, PROJECT_NAME, "tsconfig.json")).length).to.be.greaterThan(0);
             break;
     }
 
     // make sure transpilation happened
-    expect(ls(path.join(tmp, "www","js","app.bundle.js")).length).to.be.equal(1);
-    expect(ls("platforms/ios/www/js/app.bundle.js").length).to.be.equal(1);
-    expect(ls("platforms/ios/www/esm").length).to.be.equal(0);
+    expect(ls(path.join(tmp, PROJECT_NAME, "www","js","app.bundle.js")).length).to.be.equal(1);
+    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "ios", "www", "js", "app.bundle.js")).length).to.be.equal(1);
+    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "js", "app.bundle.js")).length).to.be.equal(1);
+
+    // did cleanup happen?
+    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "ios", "www", "esm", "*.*")).length).to.be.equal(0);
+    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "esm", "*.*")).length).to.be.equal(0);
 
     // check for correct output -- did anything get emitted? Was it big enough?
     regexp = new RegExp("app\.bundle\.js.*([\d|\.]+).*kB.*emitted");
@@ -78,7 +87,7 @@ function checkTranspileOutputs(transpiler, r, shouldHaveInited) {
     }
 
     // check the output too -- looking for Wrote to ... package.json if shouldHaveInited is true
-    regexp = new RegExp("Wrote to.*package.json");
+    regexp = new RegExp("Wrote to.*package\.json");
     matches = regexp.exec(r.stdout);
     if (shouldHaveInited) {
         expect(matches).to.not.be.null;
@@ -94,6 +103,8 @@ function transpile(whichExample, transpiler, mode, shouldHaveInited) {
     }
 
     copyAssets(whichExample, mode);
+    removeBundle(); // so we can be sure later that anything generated is really from this next run
+
     r = exec("cordova prepare");
 
     checkTranspileOutputs(transpiler, r, shouldHaveInited);
