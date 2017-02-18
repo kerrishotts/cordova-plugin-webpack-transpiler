@@ -106,9 +106,9 @@ function transpile(whichExample, transpiler, mode, shouldHaveInited, releaseMode
     copyAssets(whichExample, mode);
 
     if (releaseMode) {
-        r = exec("cordova prepare --verbose --release");
+        r = exec("cordova prepare --release");
     } else {
-        r = exec("cordova prepare --verbose");
+        r = exec("cordova prepare");
     }
 
     checkTranspileOutputs(transpiler, r, shouldHaveInited);
