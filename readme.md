@@ -8,6 +8,8 @@ Transpiles your files and bundles them with Webpack _automagically_!
 
 Node and npm must be installed and available in the path, and your computer must be able to install packages from npm.
 
+* If using Babel, you should have node 5+.
+
 > **NOTE:** This plugin will **NOT** work with PhoneGap Build. Sorry. :cry:
 
 ## Installation
@@ -38,9 +40,9 @@ After the plugin is added, you'll have two new configuration files in your proje
 
 You can not change the transpiler on-the-fly as the appropriate configuration files will not be completely copied (`webpack.config.js` is shared between transpilers). If you need to change the transpiler, remove the plugin first, remove leftover configuration files and `node_modules`, and then add the plugin back.
 
-### Plugin discovery during `prepare`
+### Plugin discovery
 
-If this plugin is discovered to be missing during the `prepare` phase, the command that triggered the `prepare` will be executed after installation. This currently occurs only with `prepare`, `build`, `run`, and `emulate`. The reason is because `before_prepare` is already missed by the time the discovery phase occurs, which means that the transformations this plugin performs cannot occur. This results in an incomplete project state (which might cause your build to be incorrect).
+If this plugin is discovered to be missing and added during a `prepare`, `build`, etc. command, the `prepare` phase has almost certainly already been executed and has incorrect results. Therefore you should ***execute your previous command again*** to ensure correct results.
 
 ## Usage
 
