@@ -23,7 +23,7 @@ function installPackageJSONIfNecessary(ctx) {
         return;
     }
 
-    events.emit("verbose", "no package.json, so forcing npm init");
+    events.emit("info", "... forcing npm init...");
     if (!installPackageJSON(ctx)) {
         throw new Error("Could not init project; make sure node and npm are installed and available in the PATH");
     }
@@ -66,7 +66,7 @@ function installRequiredDependenciesIfNecessary(ctx, transpiler) {
         events.emit("Verbose", "...dependencies met; no need to install");
         return;
     }
-    events.emit("verbose", "... npm install");
+    events.emit("info", "... running npm install");
     if (!installRequiredDependencies(ctx, transpiler)) {
         throw new Error("Could not install dependencies; verify your internet connection");
     }
@@ -125,6 +125,7 @@ function installRequiredConfigFilesIfNecessary(ctx, transpiler) {
         events.emit("verbose", "... all files present; not copying");
         return;
     }
+    events.emit("info", "... copying configuration files...");
     installRequiredConfigFiles(ctx, transpiler);
     events.emit("verbose", "... configurations copied successfully");
 }

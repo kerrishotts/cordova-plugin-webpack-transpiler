@@ -22,6 +22,7 @@ module.exports = function(ctx) {
 
     // make sure the environment is correct before proceeding -- these throw
     // if something's wrong
+    events.emit("info", "Checking project configuration...");
     common.installPackageJSONIfNecessary(ctx);
     common.installRequiredDependenciesIfNecessary(ctx, vars.transpiler);
     common.installRequiredConfigFilesIfNecessary(ctx, vars.transpiler);

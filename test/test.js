@@ -86,8 +86,8 @@ function checkTranspileOutputs(transpiler, r, shouldHaveInited) {
         expect(parseInt(matches[1], 10)).to.be.greaterThan(0.5);
     }
 
-    // check the output too -- looking for Wrote to ... package.json if shouldHaveInited is true
-    regexp = new RegExp("Wrote to.*package\.json");
+    // did we init correctly?
+    regexp = new RegExp("forcing npm init");
     matches = regexp.exec(r.stdout);
     if (shouldHaveInited) {
         expect(matches).to.not.be.null;
