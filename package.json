@@ -21,7 +21,7 @@
     "ecosystem:cordova"
   ],
   "author": "Kerri Shotts (kerrishotts@gmail.com)",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/kerrishotts/cordova-plugin-webpack-transpiler/issues"
   },
