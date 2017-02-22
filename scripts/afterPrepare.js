@@ -21,7 +21,7 @@ module.exports = function(ctx) {
         try {
             filesToDelete = shell.find(path.join(ctx.opts.projectRoot))
                           .filter(function(file) {
-                              return file.match(/platforms[\/|\\].+[\/|\\]www[\/|\\](ts|es|scss)[\/|\\].+\.(js|ts|.scss)$/);
+                              return file.match(/platforms[\/|\\].+[\/|\\]www[\/|\\](ts|es|scss)[\/|\\].+\.(js|ts|scss)$/);
                           });
             if (filesToDelete.length > 0) {
                 filesToDelete = filesToDelete.map(function (file) {
