@@ -87,7 +87,7 @@ function checkTranspileOutputs(transpiler, r, shouldHaveInited) {
     expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "scss", "*.*")).length).to.be.equal(0);
 
     // check for correct output -- did anything get emitted? Was it big enough?
-    regexp = /Chunk\ Names\sjs\/bundle\.js\s*([\d|\.]+)\s*kB.*emitted/gmi;
+    regexp = /Chunk\ Names\s+js\/bundle\.js\s*([\d|\.]+)\s*kB.*emitted/gmi;
     matches = regexp.exec(r.stdout);
     expect(matches).to.not.be.null;
     if (matches) {
