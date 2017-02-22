@@ -30,7 +30,7 @@ var src = path.resolve(__dirname, "src"),
  * For full information, see https://github.com/kevlened/copy-webpack-plugin
  ******************************************************************************/
 var assetsToCopyIfExternal = [
-    { from: "index.html" },
+    { from: "*.html" },
     { from: "img/**/*" },
     { from: "html/**/*" },
 ];
