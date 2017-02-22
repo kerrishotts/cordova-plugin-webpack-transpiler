@@ -9,4 +9,6 @@ example*/tsconfig.json
 example*/.babelrc
 example*/webpack.config.js
 example*/www/js
+example*/www/css
 example*/node_modules
+example*ext/www
