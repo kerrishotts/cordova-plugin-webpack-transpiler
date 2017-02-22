@@ -84,9 +84,15 @@ var jsEntryFile = indexes.es.from,
     outputFile = indexes.es.to,
     extractSass = new ExtractTextPlugin(indexes.scss.to);
 
+var entryFiles = ["./" + jsEntryFile];
+
+if (fs.existsSync(path.resolve(sourcePaths.src, sassEntryFile))) {
+    entryFiles.push("./" + sassEntryFile);
+}
+
 module.exports = {
     context: sourcePaths.src,
-    entry: ["./" + jsEntryFile, "./" + sassEntryFile],
+    entry: entryFiles,
     devtool: "inline-source-map",
     output: {
         filename: outputFile,
