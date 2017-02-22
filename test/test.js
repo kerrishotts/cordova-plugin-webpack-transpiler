@@ -74,7 +74,7 @@ function checkTranspileOutputs(transpiler, r, shouldHaveInited) {
 
     // make sure transpilation happened
     expect(ls(path.join(tmp, PROJECT_NAME, "www","js","bundle.js")).length).to.be.equal(1);
-    expect(ls(path.join(tmp, PROJECT_NAME, "www","css","bundle.js")).length).to.be.equal(1);
+    expect(ls(path.join(tmp, PROJECT_NAME, "www","css","bundle.css")).length).to.be.equal(1);
     expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "ios", "www", "js", "bundle.js")).length).to.be.equal(1);
     expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "ios", "www", "css", "bundle.css")).length).to.be.equal(1);
     expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "js", "bundle.js")).length).to.be.equal(1);
