@@ -155,7 +155,7 @@ describe ("Black box tests", function () {
         {
             name: "babel:external",
             addPluginParms: true,
-            example: "example-babel",
+            example: "example-babel-ext",
             transpiler: "babel",
             mode: "external"
         },
