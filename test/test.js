@@ -22,7 +22,8 @@ function removeCordovaProject() {
 }
 
 function removeBundle() {
-    rm("-f", path.join(tmp, PROJECT_NAME, "www", "js", "app.bundle.js"));
+    rm("-f", path.join(tmp, PROJECT_NAME, "www", "js", "bundle.js"));
+    rm("-f", path.join(tmp, PROJECT_NAME, "www", "css", "bundle.css"));
 }
 
 function addPlugin(transpiler, mode) {
@@ -48,9 +49,11 @@ function copyAssets(whichExample, mode) {
         mode = "sibling"
     }
     if (mode === "sibling") {
-        cp("-rf", path.join(pluginDir, whichExample, "www", "esm"), path.join(tmp, PROJECT_NAME, "www"));
+        cp("-rf", path.join(pluginDir, whichExample, "www", "es"), path.join(tmp, PROJECT_NAME, "www"));
+        cp("-rf", path.join(pluginDir, whichExample, "www", "scss"), path.join(tmp, PROJECT_NAME, "www"));
     } else {
-        cp("-rf", path.join(pluginDir, whichExample, "www", "esm"), path.join(tmp, PROJECT_NAME));
+        cp("-rf", path.join(pluginDir, whichExample, "www", "es"), path.join(tmp, PROJECT_NAME, "src"));
+        cp("-rf", path.join(pluginDir, whichExample, "www", "scss"), path.join(tmp, PROJECT_NAME, "src"));
     }
 }
 
@@ -70,16 +73,21 @@ function checkTranspileOutputs(transpiler, r, shouldHaveInited) {
     }
 
     // make sure transpilation happened
-    expect(ls(path.join(tmp, PROJECT_NAME, "www","js","app.bundle.js")).length).to.be.equal(1);
-    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "ios", "www", "js", "app.bundle.js")).length).to.be.equal(1);
-    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "js", "app.bundle.js")).length).to.be.equal(1);
+    expect(ls(path.join(tmp, PROJECT_NAME, "www","js","bundle.js")).length).to.be.equal(1);
+    expect(ls(path.join(tmp, PROJECT_NAME, "www","css","bundle.js")).length).to.be.equal(1);
+    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "ios", "www", "js", "bundle.js")).length).to.be.equal(1);
+    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "ios", "www", "css", "bundle.css")).length).to.be.equal(1);
+    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "js", "bundle.js")).length).to.be.equal(1);
+    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "css", "bundle.css")).length).to.be.equal(1);
 
     // did cleanup happen?
-    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "ios", "www", "esm", "*.*")).length).to.be.equal(0);
-    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "esm", "*.*")).length).to.be.equal(0);
+    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "ios", "www", "es", "*.*")).length).to.be.equal(0);
+    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "ios", "www", "scss", "*.*")).length).to.be.equal(0);
+    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "es", "*.*")).length).to.be.equal(0);
+    expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "scss", "*.*")).length).to.be.equal(0);
 
     // check for correct output -- did anything get emitted? Was it big enough?
-    regexp = /Chunk\ Names\sapp\.bundle\.js\s*([\d|\.]+)\s*kB.*emitted/gmi;
+    regexp = /Chunk\ Names\sjs\/bundle\.js\s*([\d|\.]+)\s*kB.*emitted/gmi;
     matches = regexp.exec(r.stdout);
     expect(matches).to.not.be.null;
     if (matches) {
