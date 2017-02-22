@@ -55,12 +55,12 @@ module.exports = function(ctx) {
             events.emit("verbose", "... ... with internal release webpack config");
             webpackConfig = Object.assign({}, debugWebpackConfig, {
                 devtool: "none",
-                plugins: [
-                    new webpack.optimize.UglifyJsPlugin({
-                        compress: true
-                    })
-                ]
             });
+            webpackConfig.plugins.push(
+                new webpack.optimize.UglifyJsPlugin({
+                    compress: true
+                })
+            );
         }
     } else {
         // use the debug configuration
