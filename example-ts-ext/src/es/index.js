@@ -16,8 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+/* eslint-disable */
+import pkg from "../../package.json";
+import xml from "raw-loader!../../config.xml";
+/* eslint-enable */
+
 class App {
     constructor() {
+        this.pkg = pkg;
+        this.xml = xml;
+        //this.css = css;
+    }
+    start() {
         document.addEventListener("deviceready", () => this.onDeviceReady(), false);
     }
 
@@ -43,5 +54,5 @@ class App {
     }
 }
 
-/* eslint-disable no-unused-vars */
 let app = new App();
+app.start();
