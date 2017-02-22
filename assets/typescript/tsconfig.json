@@ -6,7 +6,9 @@
         "inlineSourceMap": true
     },
     "include": [
-        "www/esm/**/*",
-        "esm/**/*"
+        "src/ts/**/*",
+        "src/es/**/*",
+        "www/ts/**/*",
+        "www/es/**/*"
     ]
 }
