@@ -1,5 +1,23 @@
 var meta = require("../package.json");
 
+var baseDeps = [
+                   "webpack",
+                   "raw-loader", "extract-text-webpack-plugin",
+                   "file-loader",
+                   "css-loader",
+                   "style-loader",
+                   "sass-loader",
+                   "resolve-url-loader",
+                   "json5-loader", "json5",
+                   "worker-loader",
+                   "node-sass",
+                   "copy-webpack-plugin",
+               ];
+var depVersions = {
+    "json5": "0.4",
+    "extract-text-webpack-plugin": "2.0.0-rc.3",
+}
+
 function projectHasPackageJSON(ctx) {
     var path = ctx.requireCordovaModule("path"),
         fs = ctx.requireCordovaModule("fs");
@@ -33,7 +51,7 @@ function projectHasRequiredDependencies(ctx, transpiler) {
     var fs = ctx.requireCordovaModule("fs"),
         path = ctx.requireCordovaModule("path");
 
-    var deps = ["webpack"].concat(require(path.join("..", "assets", transpiler, "dependencies.js")));
+    var deps = baseDeps.concat(require(path.join("..", "assets", transpiler, "dependencies.js")));
 
     var allDepsPresent = deps.reduce(function (acc, dep) {
         if (acc === false) { return acc; } // once one module is missing, don't check more
@@ -53,8 +71,13 @@ function installRequiredDependencies(ctx, transpiler) {
     var shell = ctx.requireCordovaModule("shelljs"),
         path = ctx.requireCordovaModule("path");
 
-    var deps = ["webpack"].concat(require(path.join("..", "assets", transpiler, "dependencies.js")));
-
+    var deps = baseDeps.concat(require(path.join("..", "assets", transpiler, "dependencies.js")));
+    deps = deps.map(function(dep) {
+        if (depVersions[dep]) {
+            return dep + "@" + depVersions[dep];
+        }
+        return dep;
+    });
     return (shell.exec("npm install --save-dev " + deps.join(" ")).code === 0);
 }
 
