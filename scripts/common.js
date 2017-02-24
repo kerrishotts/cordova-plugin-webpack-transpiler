@@ -177,7 +177,7 @@ function getPluginVariables(ctx) {
 function detectOperatingMode(ctx) {
     var fs = ctx.requireCordovaModule("fs"),
         path = ctx.requireCordovaModule("path");
-    if (fs.existsSync(path.join(ctx.opts.project.root, "www.src"))) {
+    if (fs.existsSync(path.join(ctx.opts.projectRoot, "www.src"))) {
         return OPMODE_EXTERNAL;
     }
     return OPMODE_SIBLING;
