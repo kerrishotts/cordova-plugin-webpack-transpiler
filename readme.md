@@ -1,16 +1,15 @@
 # Webpack and Transpiler Cordova Plugin
 
-Transpiles your files and bundles them with Webpack _automagically_!
+Transpiles your files, converts your SCSS to CSS, and bundles it all with Webpack _automagically_!
 
-> **NOTE:** This is _experimental_! It works on my machine -- which means it might blow your installation away. Review the contents of the scripts folder **before** installing it -- make sure you trust the code herein!
+> **NOTE:** This is _experimental_! It works on my machine and on Travis-CI &mdash; but it might blow your installation away. Review the contents of the scripts folder **before** installing it &mdash; make sure you trust the code herein!
 
 ## Requirements
 
-Node and npm must be installed and available in the path, and your computer must be able to install packages from npm.
-
-* If using Babel, you should have node 5+.
-
-> **NOTE:** This plugin will **NOT** work with PhoneGap Build. Sorry. :cry:
+* Node and npm must be installed and available in the path, and your computer must be able to install packages from npm.
+    * If intending to use the Babel transpiler, you must have node 5+.
+* Cordova or PhoneGap CLI installed
+    * **NOTE**: This plugin will **NOT** work with PhoneGap Build. Sorry. :cry:
 
 ## Installation
 
@@ -20,13 +19,13 @@ Add the plugin to your Cordova project:
 $ cordova plugin add --save cordova-plugin-webpack-transpiler
 ```
 
-If you want to control the transpiler used, you can pass a variable:
+If you want to control the configuration used, you can pass a variable (available configurations are in [./config](./config)):
 
 ```
-$ cordova plugin add --save cordova-plugin-webpack-transpiler --variable TRANSPILER=babel|typescript
+$ cordova plugin add --save cordova-plugin-webpack-transpiler --variable config=babel|typescript
 ```
 
-> **Note:** Adding this to your project will call `npm init` to create a `package.json` if it doesn't already exist. You'll almost certainly want to fix the generated file.
+> **Note:** Adding this to your project will call `npm init` to create a `package.json` if it doesn't already exist. You'll almost certainly want to change the generated file.
 
 After the plugin is added, you'll have two new configuration files in your project root:
 
@@ -36,40 +35,71 @@ After the plugin is added, you'll have two new configuration files in your proje
 
 > **Note:** If these files are already present in your project root, _they will not be modified_. If something isn't working as expected, check these configuration files!
 
-### Changing the Transpiler
+### Changing the Transpiler configuration
 
-You can not change the transpiler on-the-fly as the appropriate configuration files will not be completely copied (`webpack.config.js` is shared between transpilers). If you need to change the transpiler, remove the plugin first, remove leftover configuration files and `node_modules`, and then add the plugin back.
+You can not change the transpiler configuration on-the-fly as the appropriate configuration files will not be completely copied (`webpack.config.js` is shared between transpilers). If you need to change the transpiler, remove the plugin first, remove leftover configuration files and `node_modules`, and then add the plugin back.
 
 ### Plugin discovery
 
-If this plugin is discovered to be missing and added during a `prepare`, `build`, etc. command, the `prepare` phase has almost certainly already been executed and has incorrect results. Therefore you should ***execute your previous command again*** to ensure correct results.
+If this plugin is discovered to be missing and added during a `prepare`, `build`, etc. command, the `prepare` phase has already been executed and has incorrect results. Therefore you should ***execute your previous command again*** to ensure correct results.
 
 ## Usage
 
-Place your TypeScript / ES2015+ files in `www/esm`, with `index.js` or `index.ts` as the entry to your app. If using the TypeScript transpiler and `index.ts` exists, it will be used as the preferred entry point, otherwise `index.js` will be used.
+Once you install the plugin, you should review the `webpack.config.js` file and the transpiler configuration files both to understand what the scripts will do and to verify that the paths and settings are as you desire. While the configuration will generally work as-is for a simple project, it is impossible to make a one-config-fits-all configuration.
 
-You should source `www/js/app.bundle.js` in your `www/index.html` file; the bundle will be named `www/js/app.bundle.js`.
+Second, you need to determine your project structure. The plugin recognizes two structures: `sibling` (or, internal) and `external`. The sibling structure expects your ES2015+/TypeScript code to be in a folder that is a sibling of the `www/js` folder (`www/es` for ES2015+, and `www/ts` for TypeScript). The external structure expects your code to be in a folder separate from `www` (by default, `www.src`). In the latter structure, ES2015+ code lives in `www.src/es` and TypeScript code lives in `www.src/ts`.
 
-Upon `cordova prepare` (or any command that invokes this step), your files in `www/esm` will be transpiled, and then bundled with webpack, with the output being copied to `www/js`.
+> **Note**: When using TypeScript, if you have `www.src/ts` (or `www/ts`), that will take precendence over `www.src/es` (or `www/es`). In this case your entry point will assumed to be `www(.src)/ts/index.ts`.
 
-After the transformation, the JavaScript or TypeScript files in each platform's `www/esm` folder will be removed. The project root's `www/esm` folder remains intact. This is to avoid copying unnecessary files to the application bundle when built.
+When using the external structure, you may desire to copy additional files and folders from `www.src` to `www`. The defaults are displayed below, but you can edit the `webpack.config.js` file to change this.
 
-### Sibling vs. External Mode
+Once you've determined which structure you want to use, you'll need to populate it. The plugin is very particular about the names of your app's entry points (see below for defaults). You can change these if you wish by modifying `webpack.config.js`.
 
-This plugin supports two project structures -- a _sibling_ structure where `www/esm` and `www/js` are siblings and an _external_ structure where `esm` is outside of the `www` directory (so, _parent's sibling_ technically). The transformation phase detects this structure automatically. By default, however, a cleanup script is executed that attempts to remove any traces of the `www/esm` contents from any platform builds. If you don't want this script to run, you can change the `MODE` variable to anything other than `sibling`, like so:
+Sibling     |Configuration |      Entry Point           | Output
+-----------:|-------------:|:---------------------------|:------------------
+TypeScript  | `typescript` | `www/ts/index.ts`          | `www/js/bundle.js`
+ES2015      | `typescript` | `www/es/index.js`          | `www/js/bundle.js`
+            | `babel`      | `www/es/index.js`          | `www/js/bundle.js`
+SCSS        | either       | `www/scss/styles.scss`     | `www/css/bundle.css`
 
+External    |Configuration |      Entry Point           | Output
+-----------:|-------------:|:---------------------------|:------------------
+TypeScript  | `typescript` | `www.src/ts/index.ts`      | `www/js/bundle.js`
+ES2015      | `typescript` | `www.src/es/index.js`      | `www/js/bundle.js`
+            | `babel`      | `www.src/es/index.js`      | `www/js/bundle.js`
+SCSS        | either       | `www.src/scss/styles.scss` | `www/css/bundle.css`
+HTML        | either       | `www.src/*.html`           | `www/*.html`
+CSS         | either       | `www.src/css/**/*`         | `www/css/**/*`
+Images      | either       | `www.src/img/**/*`         | `www/img/**/*`
+JavaScript  | either       | `www.src/js/**/*`          | `www/js/**/*`
+Lib files   | either       | `www.src/lib/**/*`         | `www/lib/**/*`
+Vendor files| either       | `www.src/vendor/**/*`      | `www/vendor/**/*`
+
+Installing the plugin doesn't actually do anything beyond registering the hooks with Cordova. The plugin only transforms and copies code when you execute any Cordova command that triggers the `prepare` phase. This triggers two hooks: one works before the `prepare` phase and one works after.
+
+The `before prepare` hook will transpile your code (and copy files when using the external structure). If an error occurs during this process, you'll be notified. If no error occurs, you should see the something that looks like this:
+
+```text
+Starting webpack bundling and transpilation phase...
+(node:46414) DeprecationWarning: loaderUtils.parseQuery() received a non-string value which can be problematic, see https://github.com/webpack/loader-utils/issues/56
+parseQuery() will be replaced with getOptions() in the next major version of loader-utils.
+ts-loader: Using typescript@2.2.1 and /.../example-ts-ext/tsconfig.json
+... webpack bundling and typescript transpilation phase complete!
+Hash: 76ef6d9645fc284a7a9c
+Version: webpack 2.2.1
+Time: 1977ms
+         Asset     Size  Chunks             Chunk Names
+  js/bundle.js  22.6 kB       0  [emitted]  main
+css/bundle.css  14.8 kB       0  [emitted]  main
+    index.html  2.52 kB          [emitted]
+  img/logo.png  21.8 kB          [emitted]
 ```
-$ cordova plugin add --save cordova-plugin-webpack-transpiler --variable MODE=external
-```
 
-or
+The output indicates that four assets were generated. (The paths are relative to your `www` folder.) The `bundle.*` files are transformed from your ES2015+/TypeScript or SCSS files. The other files are files that were copied (this example was from an project using the external structure).
 
-```xml
-    <plugin name="cordova-plugin-webpack-transpiler">
-        <variable name="TRANSPILER" value="typescript|babel" />
-        <variable name="MODE" value="external" />
-    </plugin>
-```
+**Note**: If you are using the sibling project struture, an `after prepare` step will execute. This step removes duplicate files in the resulting platform build artifacts so that your original source files aren't needlessly copied to your app bundles.
+
+Once you've successfully executed a `prepare` phase, you'll need to update your `index.html` file to reference `js/bundle.js` and `css/bundle.css` instead of your original entry files.
 
 ### Debug vs Release
 
@@ -99,7 +129,14 @@ If you find that you need to remove the plugin, you can remove it via `cordova p
 
 # Examples
 
-See [Example project (Babel)](./example-babel) and [Example project(TypeScript)](./example-ts). Note that the example projects use `../` to install the plugin, not the plugin name. Your projects will use the plugin identifier instead.
+                   Project type | Link
+-------------------------------:|:----------------------------------
+TypeScript, Sibling structure   | [./example-ts](./example-ts)
+TypeScript, External structure  | [./example-ts-ext](./example-ts-ext)
+Babel, Sibling structure        | [./example-babel](./example-ts)
+Babel, External structure       | [./example-babel-ext](./example-ts-ext)
+
+> **Note**: the example projects use `../` to install the plugin, not the plugin name. Your projects will use the plugin identifier instead.
 
 # License
 
