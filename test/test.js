@@ -26,15 +26,15 @@ function removeBundle() {
     rm("-f", path.join(tmp, PROJECT_NAME, "www", "css", "bundle.css"));
 }
 
-function addPlugin(transpiler, mode) {
-    if (!transpiler && !mode) {
+function addPlugin(config, mode) {
+    if (!config && !mode) {
         exec("cordova plugin add --save " + pluginDir);
-        transpiler = "typescript";
+        config = "typescript";
         mode = "sibling";
     } else {
-        if (!transpiler) { transpiler = "typescript"; }
+        if (!config) { config = "typescript"; }
         if (!mode) { mode = "sibling"; }
-        exec("cordova plugin add --save " + pluginDir + " --variable TRANSPILER=" + transpiler + " --variable MODE=" + mode);
+        exec("cordova plugin add --save " + pluginDir + " --variable CONFIG=" + config + " --variable MODE=" + mode);
     }
 
     // we'd expect some files here
@@ -52,16 +52,16 @@ function copyAssets(whichExample, mode) {
         cp("-rf", path.join(pluginDir, whichExample, "www", "es"), path.join(tmp, PROJECT_NAME, "www"));
         cp("-rf", path.join(pluginDir, whichExample, "www", "scss"), path.join(tmp, PROJECT_NAME, "www"));
     } else {
-        cp("-rf", path.join(pluginDir, whichExample, "src"), path.join(tmp, PROJECT_NAME, "src"));
+        cp("-rf", path.join(pluginDir, whichExample, "www.src"), path.join(tmp, PROJECT_NAME, "www.src"));
     }
 }
 
-function checkTranspileOutputs(transpiler, r, shouldHaveInited) {
+function checkTranspileOutputs(config, r, shouldHaveInited) {
     var regexp, matches;
 
     // make sure configuration is present
     expect(ls(path.join(tmp, PROJECT_NAME, "webpack.config.js")).length).to.be.greaterThan(0);
-    switch (transpiler) {
+    switch (config) {
         case "babel":
             expect(ls(path.join(tmp, PROJECT_NAME, ".babelrc")).length).to.be.greaterThan(0);
             break;
@@ -103,7 +103,7 @@ function checkTranspileOutputs(transpiler, r, shouldHaveInited) {
     }
 }
 
-function transpile(whichExample, transpiler, mode, shouldHaveInited, releaseMode) {
+function transpile(whichExample, config, mode, shouldHaveInited, releaseMode) {
     var r;
     if (shouldHaveInited === undefined) {
         shouldHaveInited = true;
@@ -118,7 +118,7 @@ function transpile(whichExample, transpiler, mode, shouldHaveInited, releaseMode
         r = exec("cordova prepare");
     }
 
-    checkTranspileOutputs(transpiler, r, shouldHaveInited);
+    checkTranspileOutputs(config, r, shouldHaveInited);
 }
 
 describe ("Black box tests", function () {
@@ -128,35 +128,35 @@ describe ("Black box tests", function () {
             name: "default configuration",
             addPluginParms: false,
             example: "example-ts",
-            transpiler: "typescript",
+            config: "typescript",
             mode: "sibling"
         },
         {
             name: "typescript:sibling",
             addPluginParms: true,
             example: "example-ts",
-            transpiler: "typescript",
+            config: "typescript",
             mode: "sibling"
         },
         {
             name: "babel:sibling",
             addPluginParms: true,
             example: "example-babel",
-            transpiler: "babel",
+            config: "babel",
             mode: "sibling"
         },
         {
             name: "typescript:external",
             addPluginParms: true,
             example: "example-ts-ext",
-            transpiler: "typescript",
+            config: "typescript",
             mode: "external"
         },
         {
             name: "babel:external",
             addPluginParms: true,
             example: "example-babel-ext",
-            transpiler: "babel",
+            config: "babel",
             mode: "external"
         },
     ].forEach(function (test) {
@@ -165,14 +165,14 @@ describe ("Black box tests", function () {
             it("Should be able to create a Cordova project", function() { createCordovaProject(); });
             it("Should be able to add this plugin", function() {
                 if (test.addPluginParms) {
-                    addPlugin(test.transpiler, test.mode);
+                    addPlugin(test.config, test.mode);
                 } else {
                     addPlugin();
                 }
             });
-            it("Should be able to transpile", function() { transpile(test.example, test.transpiler, test.mode); });
-            it("Should be able to transpile again (no init)", function() { transpile(test.example, test.transpiler, test.mode, false); });
-            it("Should be able to transpile in release mode (no init)", function() { transpile(test.example, test.transpiler, test.mode, false, true); });
+            it("Should be able to transpile", function() { transpile(test.example, test.config, test.mode); });
+            it("Should be able to transpile again (no init)", function() { transpile(test.example, test.config, test.mode, false); });
+            it("Should be able to transpile in release mode (no init)", function() { transpile(test.example, test.config, test.mode, false, true); });
             it("Clean up", function() { removeCordovaProject(); });
         });
     });
