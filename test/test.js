@@ -1,4 +1,4 @@
-/* global describe, it, beforeEach, afterEach, __dirname, tempdir, cd, exec, ls, cp, rm */
+/* global describe, it,  __dirname, tempdir, cd, exec, ls, cp, rm */
 require("shelljs/global");
 var path = require("path");
 var expect = require("chai").expect;
