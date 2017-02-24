@@ -26,7 +26,6 @@ class App {
     constructor() {
         this.pkg = pkg;
         this.xml = xml;
-        //this.css = css;
     }
     start() {
         document.addEventListener("deviceready", () => this.onDeviceReady(), false);
