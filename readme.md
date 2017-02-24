@@ -47,7 +47,7 @@ If this plugin is discovered to be missing and added during a `prepare`, `build`
 
 Once you install the plugin, you should review the `webpack.config.js` file and the transpiler configuration files both to understand what the scripts will do and to verify that the paths and settings are as you desire. While the configuration will generally work as-is for a simple project, it is impossible to make a one-config-fits-all configuration.
 
-Second, you need to determine your project structure. The plugin recognizes two structures: `sibling` (or, internal) and `external`. The sibling structure expects your ES2015+/TypeScript code to be in a folder that is a sibling of the `www/js` folder (`www/es` for ES2015+, and `www/ts` for TypeScript). The external structure expects your code to be in a folder separate from `www` (by default, `www.src`). In the latter structure, ES2015+ code lives in `www.src/es` and TypeScript code lives in `www.src/ts`.
+Second, you need to determine your project structure. The plugin automatically recognizes two structures: `sibling` (or, internal) and `external`. The sibling structure expects your ES2015+/TypeScript code to be in a folder that is a sibling of the `www/js` folder (`www/es` for ES2015+, and `www/ts` for TypeScript). The external structure expects your code to be in a folder separate from `www` (by default, `www.src`). In the latter structure, ES2015+ code lives in `www.src/es` and TypeScript code lives in `www.src/ts`.
 
 > **Note**: When using TypeScript, if you have `www.src/ts` (or `www/ts`), that will take precendence over `www.src/es` (or `www/es`). In this case your entry point will assumed to be `www(.src)/ts/index.ts`.
 
@@ -97,7 +97,7 @@ css/bundle.css  14.8 kB       0  [emitted]  main
 
 The output indicates that four assets were generated. (The paths are relative to your `www` folder.) The `bundle.*` files are transformed from your ES2015+/TypeScript or SCSS files. The other files are files that were copied (this example was from an project using the external structure).
 
-**Note**: If you are using the sibling project struture, an `after prepare` step will execute. This step removes duplicate files in the resulting platform build artifacts so that your original source files aren't needlessly copied to your app bundles.
+**Note**: If you are using the sibling project structure, an `after prepare` step will execute. This step removes duplicate files in the resulting platform build artifacts so that your original source files aren't needlessly copied to your app bundles.
 
 Once you've successfully executed a `prepare` phase, you'll need to update your `index.html` file to reference `js/bundle.js` and `css/bundle.css` instead of your original entry files.
 
@@ -137,6 +137,22 @@ Babel, Sibling structure        | [./example-babel](./example-ts)
 Babel, External structure       | [./example-babel-ext](./example-ts-ext)
 
 > **Note**: the example projects use `../` to install the plugin, not the plugin name. Your projects will use the plugin identifier instead.
+
+# Built-in Webpack Loaders
+
+The `webpack.config.js` files come with some useful loaders:
+
+file pattern        | loader       | example
+-------------------:|:------------:|:-----------------------------
+*.json; *.json5     | json5-loader | `import pkg from "../../package.json";`
+*.html; *.txt       | raw-loader   | `import template from "../templates/list-item.html";`
+*.png; *.jpg; *.svg | file-loader  | `import icon from "../img/icon.svg";`
+
+If a file pattern you need to import isn't matched with a loader, you can specify the loader directly:
+
+```javascript
+import xml from "raw-loader!../../config.xml";
+```
 
 # License
 
