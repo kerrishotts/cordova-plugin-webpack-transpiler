@@ -7,8 +7,7 @@
     <repo>https://github.com/kerrishotts/cordova-plugin-webpack-transpiler</repo>
     <license>Apache 2.0</license>
 
-    <preference name="TRANSPILER" default="typescript" />
-    <preference name="MODE" default="sibling" />
+    <preference name="CONFIG" default="typescript" />
 
     <hook type="before_prepare" src="scripts/beforePrepare.js" />
     <hook type="after_prepare" src="scripts/afterPrepare.js" />

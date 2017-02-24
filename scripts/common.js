@@ -1,3 +1,6 @@
+var OPMODE_SIBLING = "sibling",
+    OPMODE_EXTERNAL = "external";
+
 var meta = require("../package.json");
 
 var baseDeps = [
@@ -51,7 +54,7 @@ function projectHasRequiredDependencies(ctx, transpiler) {
     var fs = ctx.requireCordovaModule("fs"),
         path = ctx.requireCordovaModule("path");
 
-    var deps = baseDeps.concat(require(path.join("..", "assets", transpiler, "dependencies.js")));
+    var deps = baseDeps.concat(require(path.join("..", "config", transpiler, "dependencies.js")));
 
     var allDepsPresent = deps.reduce(function (acc, dep) {
         if (acc === false) { return acc; } // once one module is missing, don't check more
@@ -71,7 +74,7 @@ function installRequiredDependencies(ctx, transpiler) {
     var shell = ctx.requireCordovaModule("shelljs"),
         path = ctx.requireCordovaModule("path");
 
-    var deps = baseDeps.concat(require(path.join("..", "assets", transpiler, "dependencies.js")));
+    var deps = baseDeps.concat(require(path.join("..", "config", transpiler, "dependencies.js")));
     deps = deps.map(function(dep) {
         if (depVersions[dep]) {
             return dep + "@" + depVersions[dep];
@@ -100,7 +103,7 @@ function projectHasRequiredConfigFiles(ctx, transpiler) {
     var fs = ctx.requireCordovaModule("fs"),
         path = ctx.requireCordovaModule("path");
 
-    var assets = require(path.join("..", "assets", transpiler, "assets.js"));
+    var assets = require(path.join("..", "config", transpiler, "assets.js"));
 
     var allAssetsPresent = assets.reduce(function (acc, asset) {
         if (acc === false) { return acc; } // once one asset is missing, don't check more
@@ -122,7 +125,7 @@ function installRequiredConfigFiles(ctx, transpiler) {
         path = ctx.requireCordovaModule("path"),
         events = ctx.requireCordovaModule("cordova-common").events;
 
-    var assets = require(path.join("..", "assets", transpiler, "assets.js"));
+    var assets = require(path.join("..", "config", transpiler, "assets.js"));
     return (assets.reduce(function cp(errAcc, asset) {
                 var cpFrom = path.join(__dirname, "..", "assets", transpiler, asset),
                     cpTo = path.join(ctx.opts.projectRoot, asset);
@@ -160,21 +163,23 @@ function getPluginVariables(ctx) {
         ConfigParser = cordovaCommon.ConfigParser,
         config = new ConfigParser(path.join(ctx.opts.projectRoot, "config.xml")),
         plugin = config.getPlugin(meta.name),
-        varTranspiler = "typescript",
-        varMode = "sibling";
+        varConfig = "typescript";
 
     if (plugin && plugin.variables) {
-        varTranspiler = plugin.variables.TRANSPILER || "typescript";
-        varMode = plugin.variables.MODE || "sibling";
+        varConfig = plugin.variables.CONFIG || "typescript";
     }
 
     return {
-        transpiler: varTranspiler,
-        mode: varMode
+        config: varConfig
     };
 }
 
-
+function detectOperatingMode(ctx) {
+    if (fs.existsSync(path.join(ctx.opts.project.root, "www.src")) {
+        return OPMODE_EXTERNAL;
+    }
+    return OPMODE_SIBLING;
+}
 
 module.exports = {
     projectHasPackageJSON: projectHasPackageJSON,
@@ -187,4 +192,9 @@ module.exports = {
     installRequiredConfigFiles: installRequiredConfigFiles,
     installRequiredConfigFilesIfNecessary: installRequiredConfigFilesIfNecessary,
     getPluginVariables: getPluginVariables,
+    detectOperatingmode: detectOperatingMode,
+    OPMODE: {
+        EXTERNAL: OPMODE_EXTERNAL,
+        SIBLING: OPMODE_SIBLING
+    }
 };

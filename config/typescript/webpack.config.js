@@ -20,7 +20,7 @@ var path = require("path"),
     ExtractTextPlugin = require("extract-text-webpack-plugin"),
     CopyWebpackPlugin = require("copy-webpack-plugin");
 
-var src = path.resolve(__dirname, "src"),
+var src = path.resolve(__dirname, "www.src"),
     assetsToCopy = [];
 
 /*
@@ -32,6 +32,10 @@ var src = path.resolve(__dirname, "src"),
 var assetsToCopyIfExternal = [
     { from: "*.html" },
     { from: "img/**/*" },
+    { from: "css/**/*" },
+    { from: "js/**/*" },
+    { from: "vendor/**/*" },
+    { from: "lib/**/*" },
     { from: "html/**/*" },
 ];
 

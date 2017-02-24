@@ -6,8 +6,8 @@
         "inlineSourceMap": true
     },
     "include": [
-        "src/ts/**/*",
-        "src/es/**/*",
+        "www.src/ts/**/*",
+        "www.src/es/**/*",
         "www/ts/**/*",
         "www/es/**/*"
     ]

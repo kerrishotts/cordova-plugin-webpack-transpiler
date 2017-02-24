@@ -24,8 +24,8 @@ module.exports = function(ctx) {
     // if something's wrong
     events.emit("info", "Checking project configuration...");
     common.installPackageJSONIfNecessary(ctx);
-    common.installRequiredDependenciesIfNecessary(ctx, vars.transpiler);
-    common.installRequiredConfigFilesIfNecessary(ctx, vars.transpiler);
+    common.installRequiredDependenciesIfNecessary(ctx, vars.config);
+    common.installRequiredConfigFilesIfNecessary(ctx, vars.config);
 
     // why? Because if we are linked to the plugin, node doesn't know how to find our
     // modules! So we have to have the project root directory and then resolve where

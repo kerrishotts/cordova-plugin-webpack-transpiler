@@ -7,16 +7,10 @@ module.exports = function(ctx) {
         path = ctx.requireCordovaModule("path"),
         events = ctx.requireCordovaModule("cordova-common").events;
 
-    var vars = common.getPluginVariables(ctx);
-
-    if (vars.mode !== "sibling") {
-        // no need to delete anything!
-        return;
-    }
-
     var filesToDelete;
 
-    if (ctx.opts.projectRoot) {
+    // only delete duplicated platform files if we're in SIBLING mode
+    if (ctx.opts.projectRoot && common.detectOperatingmode() === common.OPMODE.SIBLING) {
         events.emit("info", "Removing bundle artifacts from prepared platforms...");
         try {
             filesToDelete = shell.find(path.join(ctx.opts.projectRoot))
