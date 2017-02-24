@@ -26,15 +26,13 @@ function removeBundle() {
     rm("-f", path.join(tmp, PROJECT_NAME, "www", "css", "bundle.css"));
 }
 
-function addPlugin(config, mode) {
-    if (!config && !mode) {
+function addPlugin(config) {
+    if (!config) {
         exec("cordova plugin add --save " + pluginDir);
         config = "typescript";
-        mode = "sibling";
     } else {
         if (!config) { config = "typescript"; }
-        if (!mode) { mode = "sibling"; }
-        exec("cordova plugin add --save " + pluginDir + " --variable CONFIG=" + config + " --variable MODE=" + mode);
+        exec("cordova plugin add --save " + pluginDir + " --variable CONFIG=" + config);
     }
 
     // we'd expect some files here
@@ -165,7 +163,7 @@ describe ("Black box tests", function () {
             it("Should be able to create a Cordova project", function() { createCordovaProject(); });
             it("Should be able to add this plugin", function() {
                 if (test.addPluginParms) {
-                    addPlugin(test.config, test.mode);
+                    addPlugin(test.config);
                 } else {
                     addPlugin();
                 }

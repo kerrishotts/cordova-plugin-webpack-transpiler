@@ -50,11 +50,11 @@ function installPackageJSONIfNecessary(ctx) {
     }
 }
 
-function projectHasRequiredDependencies(ctx, transpiler) {
+function projectHasRequiredDependencies(ctx, config) {
     var fs = ctx.requireCordovaModule("fs"),
         path = ctx.requireCordovaModule("path");
 
-    var deps = baseDeps.concat(require(path.join("..", "config", transpiler, "dependencies.js")));
+    var deps = baseDeps.concat(require(path.join("..", "config", config, "dependencies.js")));
 
     var allDepsPresent = deps.reduce(function (acc, dep) {
         if (acc === false) { return acc; } // once one module is missing, don't check more
@@ -70,11 +70,11 @@ function projectHasRequiredDependencies(ctx, transpiler) {
     return allDepsPresent;
 }
 
-function installRequiredDependencies(ctx, transpiler) {
+function installRequiredDependencies(ctx, config) {
     var shell = ctx.requireCordovaModule("shelljs"),
         path = ctx.requireCordovaModule("path");
 
-    var deps = baseDeps.concat(require(path.join("..", "config", transpiler, "dependencies.js")));
+    var deps = baseDeps.concat(require(path.join("..", "config", config, "dependencies.js")));
     deps = deps.map(function(dep) {
         if (depVersions[dep]) {
             return dep + "@" + depVersions[dep];
@@ -84,26 +84,26 @@ function installRequiredDependencies(ctx, transpiler) {
     return (shell.exec("npm install --save-dev " + deps.join(" ")).code === 0);
 }
 
-function installRequiredDependenciesIfNecessary(ctx, transpiler) {
+function installRequiredDependenciesIfNecessary(ctx, config) {
     var events = ctx.requireCordovaModule("cordova-common").events;
 
     events.emit("verbose", "Checking if we need to install any dependencies...");
-    if (projectHasRequiredDependencies(ctx, transpiler)) {
+    if (projectHasRequiredDependencies(ctx, config)) {
         events.emit("Verbose", "...dependencies met; no need to install");
         return;
     }
     events.emit("info", "... running npm install");
-    if (!installRequiredDependencies(ctx, transpiler)) {
+    if (!installRequiredDependencies(ctx, config)) {
         throw new Error("Could not install dependencies; verify your internet connection");
     }
     events.emit("verbose", "... npm install finished");
 }
 
-function projectHasRequiredConfigFiles(ctx, transpiler) {
+function projectHasRequiredConfigFiles(ctx, config) {
     var fs = ctx.requireCordovaModule("fs"),
         path = ctx.requireCordovaModule("path");
 
-    var assets = require(path.join("..", "config", transpiler, "assets.js"));
+    var assets = require(path.join("..", "config", config, "assets.js"));
 
     var allAssetsPresent = assets.reduce(function (acc, asset) {
         if (acc === false) { return acc; } // once one asset is missing, don't check more
@@ -119,15 +119,15 @@ function projectHasRequiredConfigFiles(ctx, transpiler) {
     return allAssetsPresent;
 }
 
-function installRequiredConfigFiles(ctx, transpiler) {
+function installRequiredConfigFiles(ctx, config) {
     var shell = ctx.requireCordovaModule("shelljs"),
         fs = ctx.requireCordovaModule("fs"),
         path = ctx.requireCordovaModule("path"),
         events = ctx.requireCordovaModule("cordova-common").events;
 
-    var assets = require(path.join("..", "config", transpiler, "assets.js"));
+    var assets = require(path.join("..", "config", config, "assets.js"));
     return (assets.reduce(function cp(errAcc, asset) {
-                var cpFrom = path.join(__dirname, "..", "assets", transpiler, asset),
+                var cpFrom = path.join(__dirname, "..", "config", config, asset),
                     cpTo = path.join(ctx.opts.projectRoot, asset);
                 try {
                     // check for existence first! if present, don't overwrite
@@ -144,15 +144,15 @@ function installRequiredConfigFiles(ctx, transpiler) {
             }, undefined) !== undefined);
 }
 
-function installRequiredConfigFilesIfNecessary(ctx, transpiler) {
+function installRequiredConfigFilesIfNecessary(ctx, config) {
     var events = ctx.requireCordovaModule("cordova-common").events;
     events.emit("verbose", "Checking webpack and transpiler configurations...");
-    if (projectHasRequiredConfigFiles(ctx, transpiler)) {
+    if (projectHasRequiredConfigFiles(ctx, config)) {
         events.emit("verbose", "... all files present; not copying");
         return;
     }
     events.emit("info", "... copying configuration files...");
-    installRequiredConfigFiles(ctx, transpiler);
+    installRequiredConfigFiles(ctx, config);
     events.emit("verbose", "... configurations copied successfully");
 }
 
