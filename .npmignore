@@ -1,3 +1,9 @@
 .git
-example
+example-babel
+example-ts
+example-babel-ext
+example-ts-ext
+test
+.eslintrc.js
+.travis.yml
 .vscode
