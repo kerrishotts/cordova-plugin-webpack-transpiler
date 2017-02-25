@@ -18,6 +18,7 @@
     "webpack",
     "es2015",
     "es6",
+    "scss",
     "ecosystem:cordova"
   ],
   "author": "Kerri Shotts (kerrishotts@gmail.com)",
@@ -35,6 +36,11 @@
     "test": "mocha"
   },
   "engines": {
-    "node": ">= 5.0.0"
+    "node": ">= 5.0.0",
+    "cordovaDependencies": {
+      "0.1.0": {
+        "cordova": ">= 6.0.0"
+      }
+    }
   }
 }

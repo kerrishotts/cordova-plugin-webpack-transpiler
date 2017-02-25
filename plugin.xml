@@ -3,7 +3,7 @@
     <name>WebpackTranspilerBundler</name>
     <description>Transpile and bundle with WebPack</description>
     <author>Kerri Shotts (kerrishotts@gmail.com)</author>
-    <keywords>cordova, typescript, babel, transpile, bundle, webpack, es2015, es6</keywords>
+    <keywords>cordova, typescript, babel, transpile, bundle, webpack, es2015, es6, scss</keywords>
     <repo>https://github.com/kerrishotts/cordova-plugin-webpack-transpiler</repo>
     <license>Apache 2.0</license>
 
