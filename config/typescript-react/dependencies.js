@@ -1,0 +1,1 @@
+module.exports = ["ts-loader", "typescript", "core-js", "react", "react-dom", "react-router" ];
