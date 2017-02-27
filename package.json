@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-webpack-transpiler",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Transpile and bundle with WebPack",
   "cordova": {
     "id": "cordova-plugin-webpack-transpiler",
