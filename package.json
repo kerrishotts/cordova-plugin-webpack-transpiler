@@ -4,7 +4,7 @@
   "description": "Transpile and bundle with WebPack",
   "cordova": {
     "id": "cordova-plugin-webpack-transpiler",
-    "platforms": []
+    "platforms": ["ios", "osx", "windows", "wp8", "android", "ubuntu", "blackberry10", "browser"]
   },
   "repository": {
     "type": "git",
