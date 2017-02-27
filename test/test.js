@@ -59,6 +59,7 @@ function checkTranspileOutputs(config, r, shouldHaveInited) {
 
     // make sure configuration is present
     expect(ls(path.join(tmp, PROJECT_NAME, "webpack.config.js")).length).to.be.greaterThan(0);
+    expect(ls(path.join(tmp, PROJECT_NAME, "webpack.common.js")).length).to.be.greaterThan(0);
     switch (config) {
         case "babel":
             expect(ls(path.join(tmp, PROJECT_NAME, ".babelrc")).length).to.be.greaterThan(0);
@@ -147,6 +148,13 @@ describe ("Black box tests", function () {
             name: "typescript:external",
             addPluginParms: true,
             example: "example-ts-ext",
+            config: "typescript",
+            mode: "external"
+        },
+        {
+            name: "typescript-react:external",
+            addPluginParms: true,
+            example: "example-ts-ext-react",
             config: "typescript",
             mode: "external"
         },
