@@ -26,4 +26,7 @@
     <plugin name="cordova-plugin-webpack-transpiler" spec="..">
         <variable name="CONFIG" value="babel" />
     </plugin>
+    <engine name="browser" spec="~4.1.0" />
+    <engine name="ios" spec="~4.3.1" />
+    <engine name="android" spec="~6.1.2" />
 </widget>
