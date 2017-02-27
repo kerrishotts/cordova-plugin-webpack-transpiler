@@ -213,7 +213,7 @@ The following are exported by `webpack.common.js`:
 * `config(options)`: returns a webpack configuration based on `options`, as follows:
     * `src` (optional): Source directory; defaults to `$PROJECT_ROOT/www.src` if present, or `$PROJECT_ROOT/www` otherwise.
     * `dirs` (required): directory mappings. A default mapping is exported as `defaults.dirs` and looks like follows:
-        ```json
+        ```js
         {
             css:      "css",
             es:       "es",
@@ -241,15 +241,16 @@ The following are exported by `webpack.common.js`:
 
         * The `alias` key is used to add additional module resolution aliases. In addition, `$LIB`, `Lib`, `$VENDOR` and `Vendor` point to `dirs.lib` and `dirs.vendor`.
     * `sourcePaths` (optional): Provides the names of the source paths that can be transformed. Any missing paths are copied from the default, as follows:
-        ```json
+        ```js
         {
             src: options.src,
             es: dirs.es,
             ts: dirs.ts
             scss: dirs.scss
         }
+        ```
     * `outputPaths` (optional): Provides the names of the output paths. Any missing paths are copied from the default, as follows:
-        ```json
+        ```js
         {
             www: dirs.www,
             js: dirs.js,
@@ -257,7 +258,7 @@ The following are exported by `webpack.common.js`:
         }
         ```
     * `indexes` (optional): Provides source/destination mapping for varies entry and index files. Extended from the following form (`from` is relative to `sourcePaths.src`, and `to` is relative to `outputPaths.www`):
-        ```json
+        ```js
         {
             scss: {from:, to:},
             es: {from:, to:},
@@ -268,7 +269,7 @@ The following are exported by `webpack.common.js`:
     * `outputFile` (optional): Specifies the output filename for the JavaScript bundle. Defaults to `indexes.es.to + "bundle.js"` (or `bundle.ts` if using TypeScript).
     * `vendor` (required): Modules to output as part of the `vendor` chunk. If none, pass `[]`.
     * `entryFiles` (optional): Specifies the entry files for the app. If not provided, defaults to (substituting `ts` if using TypeScript):
-        ```json
+        ```js
         {
             app: ["./" + indexes.es.from, "./" + indexes.scss.from],
             vendor: vendor  // if vendor has length > 0
@@ -278,7 +279,7 @@ The following are exported by `webpack.common.js`:
     * `allowScss` (optional): Indicates if Scss is permitted. Defaults to `false`.
     * `transpiler` (optional): Indicates the webpack loader to use for JavaScript files. If `allowTypeScript` is `true`, defaults to `ts-loader`, otherwise defaults to `babel-loader`.
     * `assetsToCopyIfExternal` (required): Indicates the assets to copy from `dirs.external` to `dirs.www`. A default list is exported under `defaults.assetsToCopyIfExternal`, and looks like follows:
-        ```json
+        ```js
         [
             { from: "*.html" },
             { from: dirs.img + "/**/*" },
