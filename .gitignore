@@ -8,7 +8,8 @@ example*/package.json
 example*/tsconfig.json
 example*/.babelrc
 example*/webpack.config.js
+example*/webpack.common.js
 example*/www/js
 example*/www/css
 example*/node_modules
-example*ext/www
+example*ext*/www

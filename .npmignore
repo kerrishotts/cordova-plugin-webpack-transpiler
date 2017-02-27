@@ -3,6 +3,7 @@ example-babel
 example-ts
 example-babel-ext
 example-ts-ext
+example-ts-ext-react
 test
 .eslintrc.js
 .travis.yml
