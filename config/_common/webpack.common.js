@@ -75,6 +75,8 @@ var vendor = [];
 
 function config(options) {
     var src = options.src,
+        assetsToCopyIfExternal = options.assetsToCopyIfExternal,
+        assetsToCopyIfSibling = options.assetsToCopyIfSibling,
         sourcePaths = options.sourcePaths,
         entryFiles = options.entryFiles,
         outputFile = options.outputFile,
