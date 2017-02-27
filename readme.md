@@ -22,7 +22,8 @@ $ cordova plugin add --save cordova-plugin-webpack-transpiler
 If you want to control the configuration used, you can pass a variable (available configurations are in [./config](./config)):
 
 ```
-$ cordova plugin add --save cordova-plugin-webpack-transpiler --variable config=babel|typescript|...
+$ cordova plugin add cordova-plugin-webpack-transpiler \
+          --save --variable config=babel|typescript|...
 ```
 
 > **Note:** Adding this to your project will call `npm init` to create a `package.json` if it doesn't already exist. You'll almost certainly want to change the generated file.
@@ -154,6 +155,165 @@ If a file pattern you need to import isn't matched with a loader, you can specif
 
 ```javascript
 import xml from "raw-loader!../../config.xml";
+```
+
+# Built-in asset copying
+
+When in the "external" operating mode, the following assets will be copied from `www.src` to `www`:
+
+```
+*.html
+img/**/*
+css/**.*
+js/**.*
+vendor/**.*
+lib/**.*
+html/**/*
+```
+
+# Built-in Module Resolution
+
+The default configurations add the following module resolution paths (relative to project root):
+
+```
+(www|src.www)/(es|ts)/lib
+(www|src.www)/(es|ts)/vendor
+(www|src.www)/lib
+(www|src.www)/vendor
+node_modules
+```
+
+# Built-in Aliases
+
+The default configurations add the following aliases, which may be useful in resolving your app's modules:
+
+Alias            | Path
+----------------:|:--------------------------------------
+`$LIB`           | `(www|src.www)/lib`
+`Lib`            | `(www|src.www)/lib`
+`$VENDOR`        | `(www|src.www)/vendor`
+`Vendor`         | `(www|src.www)/vendor`
+`Components`     | `(www|src.www)/(es|ts)/components`
+`Controllers`    | `(www|src.www)/(es|ts)/controllers`
+`Models`         | `(www|src.www)/(es|ts)/models`
+`Pages`          | `(www|src.www)/(es|ts)/pages`
+`Routes`         | `(www|src.www)/(es|ts)/routes`
+`Templates`      | `(www|src.www)/(es|ts)/templates`
+`Utilities`      | `(www|src.www)/(es|ts)/utilities`
+`Views`          | `(www|src.www)/(es|ts)/views`
+
+# Overriding the configuration
+
+Preferably you should make changes to `webpack.config.js` instead of changing `webpack.common.js`. The main reason is that doing so allows you to remove `webpack.common.js` should a new version of the plugin require a fresh version. Plus, unless you're completely changing how the bundling works, you'll end up with a more maintainable configuration.
+
+## webpack.common.js exports
+
+The following are exported by `webpack.common.js`:
+
+* `config(options)`: returns a webpack configuration based on `options`, as follows:
+    * `src` (optional): Source directory; defaults to `$PROJECT_ROOT/www.src` if present, or `$PROJECT_ROOT/www` otherwise.
+    * `dirs` (required): directory mappings. A default mapping is exported as `defaults.dirs` and looks like follows:
+        ```json
+        {
+            css:      "css",
+            es:       "es",
+            external: "www.src",
+            html:     "html",
+            img:      "img",
+            js:       "js",
+            lib:      "lib",
+            scss:     "scss",
+            ts:       "ts",
+            vendor:   "vendor",
+            www:      "www",
+            aliases: {
+                Components:  "components",
+                Controllers: "controllers",
+                Models:      "models",
+                Pages:       "pages",
+                Routes:      "routes",
+                Templates:   "templates",
+                Utilities:   "util",
+                Views:       "views",
+            }
+        }
+        ```
+
+        * The `alias` key is used to add additional module resolution aliases. In addition, `$LIB`, `Lib`, `$VENDOR` and `Vendor` point to `dirs.lib` and `dirs.vendor`.
+    * `sourcePaths` (optional): Provides the names of the source paths that can be transformed. Any missing paths are copied from the default, as follows:
+        ```json
+        {
+            src: options.src,
+            es: dirs.es,
+            ts: dirs.ts
+            scss: dirs.scss
+        }
+    * `outputPaths` (optional): Provides the names of the output paths. Any missing paths are copied from the default, as follows:
+        ```json
+        {
+            www: dirs.www,
+            js: dirs.js,
+            css: dirs.css
+        }
+        ```
+    * `indexes` (optional): Provides source/destination mapping for varies entry and index files. Extended from the following form (`from` is relative to `sourcePaths.src`, and `to` is relative to `outputPaths.www`):
+        ```json
+        {
+            scss: {from:, to:},
+            es: {from:, to:},
+            ts: {from:, to:},
+            vendor: {to:}
+        }
+        ```
+    * `outputFile` (optional): Specifies the output filename for the JavaScript bundle. Defaults to `indexes.es.to + "bundle.js"` (or `bundle.ts` if using TypeScript).
+    * `vendor` (required): Modules to output as part of the `vendor` chunk. If none, pass `[]`.
+    * `entryFiles` (optional): Specifies the entry files for the app. If not provided, defaults to (substituting `ts` if using TypeScript):
+        ```json
+        {
+            app: ["./" + indexes.es.from, "./" + indexes.scss.from],
+            vendor: vendor  // if vendor has length > 0
+        }
+        ```
+    * `allowTypeScript` (optional): Indicates if typescript is permitted. This enables extra extensions and configuration for the TypeScript compiler. Defaults to `false`.
+    * `allowScss` (optional): Indicates if Scss is permitted. Defaults to `false`.
+    * `transpiler` (optional): Indicates the webpack loader to use for JavaScript files. If `allowTypeScript` is `true`, defaults to `ts-loader`, otherwise defaults to `babel-loader`.
+    * `assetsToCopyIfExternal` (required): Indicates the assets to copy from `dirs.external` to `dirs.www`. A default list is exported under `defaults.assetsToCopyIfExternal`, and looks like follows:
+        ```json
+        [
+            { from: "*.html" },
+            { from: dirs.img + "/**/*" },
+            { from: dirs.css + "/**/*" },
+            { from: dirs.js + "/**/*" },
+            { from: dirs.vendor + "/**/*" },
+            { from: dirs.lib + "/**/*" },
+            { from: dirs.html + "/**/*" },
+        ]
+        ```
+    * `assetsToCopyIfSibling` (required): Same as `assetsToCopyIfExternal`, but applies if the source directory is the `dirs.www` folder instead of `dirs.external`. The exported default (`defaults.assetsToCopyIfSibling`) is `[]`.
+* `defaults`: useful defaults, as follows
+    * `dirs`: exports default directory mappings
+    * `vendor`: exports default vendor modules
+    * `assetsToCopyIfExternal`, `assetsToCopyIfSibling`: exports default assets to copy
+    * `transpiler`: exports default transpiler
+
+## Example configuration
+
+This configuration uses most of the `typescript` configuration defaults, but adds some React modules to the `vendor` option:
+
+```javascript
+var webpackCommonConfig = require("./webpack.common.js");
+
+module.exports = webpackCommonConfig.config(
+    {
+        allowTypeScript: true,
+        allowScss: true,
+        transpiler: "ts-loader",
+        dirs: webpackCommonConfig.defaults.dirs,
+        assetsToCopyIfExternal: webpackCommonConfig.defaults.assetsToCopyIfExternal,
+        assetsToCopyIfInternal: webpackCommonConfig.defaults.assetsToCopyIfInternal,
+        vendor: webpackCommonConfig.defaults.vendor.concat("react", "react-dom", "react-router")
+    }
+);
 ```
 
 # License
