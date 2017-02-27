@@ -214,7 +214,7 @@ function config(options) {
                 },
                 {
                     test: /\.(js|jsx|ts|tsx)$/,
-                    use: [ transpiler + (usingTypeScript ? "" : "?entryFileIsJs") ],
+                    use: [ transpiler + (allowTypeScript ? (usingTypeScript ? "" : "?entryFileIsJs") : "") ],
                     exclude: /node_modules/
                 },
             ]
