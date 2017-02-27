@@ -128,7 +128,7 @@ function installRequiredConfigFiles(ctx, config) {
     var assets = require(path.join("..", "config", config, "assets.js"));
     return (assets.reduce(function cp(errAcc, asset) {
                 var cpFrom = path.join(__dirname, "..", "config", config, asset),
-                    cpTo = path.join(ctx.opts.projectRoot, asset);
+                    cpTo = path.join(ctx.opts.projectRoot, path.basename(asset));
                 try {
                     // check for existence first! if present, don't overwrite
                     if (!fs.existsSync(cpTo)) {
