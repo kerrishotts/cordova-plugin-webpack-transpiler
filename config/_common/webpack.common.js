@@ -84,7 +84,7 @@ function config(options) {
         vendor = options.vendor,
         allowTypeScript = options.allowTypeScript || false,
         allowScss = options.allowScss | false,
-        transpiler = options.transpiler || allowTypeScript ? "ts-loader" : "babel-loader";
+        transpiler = options.transpiler || (allowTypeScript ? "ts-loader" : "babel-loader");
     var assetsToCopy = [];
 
     if (!src) {
