@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-webpack-transpiler",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Transpile and bundle with WebPack",
   "cordova": {
     "id": "cordova-plugin-webpack-transpiler",
@@ -19,7 +19,15 @@
     "es2015",
     "es6",
     "scss",
-    "ecosystem:cordova"
+    "ecosystem:cordova",
+    "cordova-ios",
+    "cordova-android",
+    "cordova-browser",
+    "cordova-ubuntu",
+    "cordova-windows",
+    "cordova-wp8",
+    "cordova-osx",
+    "cordova-blackberry10"
   ],
   "author": "Kerri Shotts (kerrishotts@gmail.com)",
   "license": "Apache-2.0",
