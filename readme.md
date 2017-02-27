@@ -22,7 +22,7 @@ $ cordova plugin add --save cordova-plugin-webpack-transpiler
 If you want to control the configuration used, you can pass a variable (available configurations are in [./config](./config)):
 
 ```
-$ cordova plugin add --save cordova-plugin-webpack-transpiler --variable config=babel|typescript
+$ cordova plugin add --save cordova-plugin-webpack-transpiler --variable config=babel|typescript|...
 ```
 
 > **Note:** Adding this to your project will call `npm init` to create a `package.json` if it doesn't already exist. You'll almost certainly want to change the generated file.
@@ -30,6 +30,7 @@ $ cordova plugin add --save cordova-plugin-webpack-transpiler --variable config=
 After the plugin is added, you'll have two new configuration files in your project root:
 
 * `webpack.config.js` - the default configuration for webpack
+* `webpack.common.js` - common webpack configuration (extended by webpack.config.js)
 * `tsconfig.json` - the default TypeScript configuration (when using the TypeScript transpiler)
 * `.babelrc` - the default Babel configuration (when using the Babel transpiler)
 
@@ -37,7 +38,7 @@ After the plugin is added, you'll have two new configuration files in your proje
 
 ### Changing the Transpiler configuration
 
-You can not change the transpiler configuration on-the-fly as the appropriate configuration files will not be completely copied (`webpack.config.js` is shared between transpilers). If you need to change the transpiler, remove the plugin first, remove leftover configuration files and `node_modules`, and then add the plugin back.
+You can not change the transpiler configuration on-the-fly as the appropriate configuration files will not be completely copied (`webpack.config.js` and `webpack.common.js` is shared between transpilers). If you need to change the transpiler, remove the plugin first, remove the left over configuration files and `node_modules`, and then add the plugin back.
 
 ### Plugin discovery
 
@@ -45,7 +46,7 @@ If this plugin is discovered to be missing and added during a `prepare`, `build`
 
 ## Usage
 
-Once you install the plugin, you should review the `webpack.config.js` file and the transpiler configuration files both to understand what the scripts will do and to verify that the paths and settings are as you desire. While the configuration will generally work as-is for a simple project, it is impossible to make a one-config-fits-all configuration.
+Once you install the plugin, you should review the `webpack.config.js` and `webpack.common.js` files and the transpiler configuration files both to understand what the scripts will do and to verify that the paths and settings are as you desire. While the configuration will generally work as-is for a simple project, it is impossible to make a one-config-fits-all configuration. Unless otherwise unable, you should make changes in `webpack.config.js` (see `webpack.common.js` for overrideable structures).
 
 Second, you need to determine your project structure. The plugin automatically recognizes two structures: `sibling` (or, internal) and `external`. The sibling structure expects your ES2015+/TypeScript code to be in a folder that is a sibling of the `www/js` folder (`www/es` for ES2015+, and `www/ts` for TypeScript). The external structure expects your code to be in a folder separate from `www` (by default, `www.src`). In the latter structure, ES2015+ code lives in `www.src/es` and TypeScript code lives in `www.src/ts`.
 
@@ -97,7 +98,7 @@ css/bundle.css  14.8 kB       0  [emitted]  main
 
 The output indicates that four assets were generated. (The paths are relative to your `www` folder.) The `bundle.*` files are transformed from your ES2015+/TypeScript or SCSS files. The other files are files that were copied (this example was from an project using the external structure).
 
-**Note**: If you are using the sibling project structure, an `after prepare` step will execute. This step removes duplicate files in the resulting platform build artifacts so that your original source files aren't needlessly copied to your app bundles.
+> **Note**: If you are using the sibling project structure, an `after prepare` step will execute. This step removes duplicate files in the resulting platform build artifacts so that your original source files aren't needlessly copied to your app bundles.
 
 Once you've successfully executed a `prepare` phase, you'll need to update your `index.html` file to reference `js/bundle.js` and `css/bundle.css` instead of your original entry files.
 
@@ -110,11 +111,11 @@ The plugin watches for a `--release` switch on the command line; if it is detect
 
 If you need to change this behavior, you can override it by copying `webpack.config.js` in your project root to `webpack.release.config.js` and making the desired changes.
 
-> **Note:** When using release mode, Webpack will currently throw a warning due to the way UglifyJS works. You can ignore the warning.
-
 ### Modifying the configuration files
 
-If you wish to modify `webpack.config.js`, `webpack.release.config.js`, `.babelrc`, or `tsconfig.json`, you can. The plugin will not attempt to override their contents, and it won't attempt to overwrite the files on a reinstall. If you need to reset these configuration files, delete them and reinstall the plugin.
+If you wish to modify `webpack.common.js`, `webpack.config.js`, `webpack.release.config.js`, `.babelrc`, or `tsconfig.json`, you can. The plugin will not attempt to override their contents, and it won't attempt to overwrite the files on a reinstall. If you need to reset these configuration files, delete them and reinstall the plugin.
+
+> **Note**: You should prefer to override settings used by `webpack.common.js` in `webpack.config.js`.
 
 ## Removing the plugin
 
@@ -124,6 +125,7 @@ If you find that you need to remove the plugin, you can remove it via `cordova p
 * `package.json`
 * `tsconfig.json`
 * `.babelrc`
+* `webpack.common.js`
 * `webpack.config.js`
 * `webpack.release.config.js`
 
