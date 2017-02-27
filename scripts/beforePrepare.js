@@ -58,7 +58,9 @@ module.exports = function(ctx) {
             });
             webpackConfig.plugins.push(
                 new webpack.optimize.UglifyJsPlugin({
-                    compress: true
+                    compress: {
+                        warnings: false
+                    }
                 })
             );
         }
