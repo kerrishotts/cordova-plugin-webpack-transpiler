@@ -85,7 +85,7 @@ module.exports = function(ctx) {
                 deferral.reject(stats);
             }
         }
-        events.emit("info", "... webpack bundling and typescript transpilation phase complete!");
+        events.emit("info", "... webpack bundling and transpilation phase complete!");
         events.emit(stats.hasWarnings() ? "warn" : "info", prettyStats);
         deferral.resolve();
     });
