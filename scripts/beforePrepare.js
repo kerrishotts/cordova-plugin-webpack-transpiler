@@ -18,6 +18,10 @@ module.exports = function(ctx) {
         Q = ctx.requireCordovaModule("q"),
         events = ctx.requireCordovaModule("cordova-common").events;
 
+    if (ctx.cmdLine.toLowerCase().indexOf("--notransform") > -1) {
+        return;
+    }
+
     var vars = common.getPluginVariables(ctx);
 
     // make sure the environment is correct before proceeding -- these throw

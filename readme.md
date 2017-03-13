@@ -112,6 +112,10 @@ The plugin watches for a `--release` switch on the command line; if it is detect
 
 If you need to change this behavior, you can override it by copying `webpack.config.js` in your project root to `webpack.release.config.js` and making the desired changes.
 
+### Avoiding transformations
+
+If, for whatever reason, you don't want this plugin to do anything during the `prepare` phase, you can pass the `--notransform` switch. Probably most useful with the `--nobuild` switch.
+
 ### Modifying the configuration files
 
 If you wish to modify `webpack.common.js`, `webpack.config.js`, `webpack.release.config.js`, `.babelrc`, or `tsconfig.json`, you can. The plugin will not attempt to override their contents, and it won't attempt to overwrite the files on a reinstall. If you need to reset these configuration files, delete them and reinstall the plugin.
