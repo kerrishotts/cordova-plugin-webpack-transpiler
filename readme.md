@@ -150,6 +150,7 @@ file pattern        | loader       | example
 *.json; *.json5     | json5-loader | `import pkg from "../../package.json";`
 *.html; *.txt       | raw-loader   | `import template from "../templates/list-item.html";`
 *.png; *.jpg; *.svg | file-loader  | `import icon from "../img/icon.svg";`
+&mdash;             | imports-loader |  None; you must specify the rules yourself
 
 If a file pattern you need to import isn't matched with a loader, you can specify the loader directly:
 
@@ -162,7 +163,7 @@ import xml from "raw-loader!../../config.xml";
 When in the "external" operating mode, the following assets will be copied from `www.src` to `www`:
 
 ```
-*.html
+*.*
 img/**/*
 css/**.*
 js/**.*
@@ -212,6 +213,14 @@ The following are exported by `webpack.common.js`:
 
 * `config(options)`: returns a webpack configuration based on `options`, as follows:
     * `src` (optional): Source directory; defaults to `$PROJECT_ROOT/www.src` if present, or `$PROJECT_ROOT/www` otherwise.
+    * `extensions` (optional): Extensions that can be left off in `import` statements. Defaults to:
+        ```js
+        [".js", ".ts", ".jsx", ".es", // typical JS extensions
+        ".jsm", ".esm",               // jsm is node's ES6 module ext
+        ".json",                      // some modules require json without an extension
+        ".css", ".scss",              // CSS & SASS extensions
+        "*"];                         // allow extensions on imports
+        ```
     * `dirs` (required): directory mappings. A default mapping is exported as `defaults.dirs` and looks like follows:
         ```js
         {
@@ -299,12 +308,12 @@ The following are exported by `webpack.common.js`:
 
 ## Example configuration
 
-This configuration uses most of the `typescript` configuration defaults, but adds some React modules to the `vendor` option:
+This configuration uses most of the `typescript` configuration defaults, but adds some React modules to the `vendor` option and adds an additional rule using the `imports-loader`:
 
 ```javascript
 var webpackCommonConfig = require("./webpack.common.js");
 
-module.exports = webpackCommonConfig.config(
+var webpackConfig = webpackCommonConfig.config(
     {
         allowTypeScript: true,
         allowScss: true,
@@ -315,6 +324,10 @@ module.exports = webpackCommonConfig.config(
         vendor: webpackCommonConfig.defaults.vendor.concat("react", "react-dom", "react-router")
     }
 );
+
+webpackConfig.module.rules.push({ test: /globalize/, loader: "imports-loader?define=>false" });
+
+module.exports = webpackConfig;
 ```
 
 # License

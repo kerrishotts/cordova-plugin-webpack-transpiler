@@ -18,6 +18,7 @@
  */
 
 /* eslint-disable */
+import "babel-polyfill";
 import pkg from "../../package.json";
 import xml from "raw-loader!../../config.xml";
 /* eslint-enable */

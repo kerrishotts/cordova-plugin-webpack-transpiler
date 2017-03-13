@@ -15,6 +15,7 @@ var baseDeps = [
                    "worker-loader",
                    "node-sass",
                    "copy-webpack-plugin",
+                   "imports-loader",
                ];
 var depVersions = {
     "json5": "0.4",
