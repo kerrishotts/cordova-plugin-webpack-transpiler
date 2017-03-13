@@ -70,7 +70,7 @@ TypeScript  | `typescript` | `www.src/ts/index.ts`      | `www/js/bundle.js`
 ES2015      | `typescript` | `www.src/es/index.js`      | `www/js/bundle.js`
             | `babel`      | `www.src/es/index.js`      | `www/js/bundle.js`
 SCSS        | either       | `www.src/scss/styles.scss` | `www/css/bundle.css`
-HTML        | either       | `www.src/*.html`           | `www/*.html`
+Misc        | either       | `www.src/*.*`              | `www/*.*`
 CSS         | either       | `www.src/css/**/*`         | `www/css/**/*`
 Images      | either       | `www.src/img/**/*`         | `www/img/**/*`
 JavaScript  | either       | `www.src/js/**/*`          | `www/js/**/*`

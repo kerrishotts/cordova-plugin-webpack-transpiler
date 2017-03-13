@@ -1,0 +1,16 @@
+# 2.2.4
+
+ - Copies `/*.*` from `www.src` to `www`, not just `*.html`.
+ - Exposed default `extensions`
+ - Added `imports-loader` as a dependency, but defines no rules &mdash; this is up to you
+ - added the `--notransform` switch
+ - Updated documentation
+
+# 2.2.3
+
+ - Changed wording when webpack & transpilation phase was over; may not always be typescript!
+
+# 2.2.2
+
+ - Fixed `assetsToCopy%` options to `config`
+ - Tweaked `package.json`
