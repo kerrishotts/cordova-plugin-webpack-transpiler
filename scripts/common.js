@@ -3,24 +3,23 @@ var OPMODE_SIBLING = "sibling",
 
 var meta = require("../package.json");
 
-var baseDeps = [
-                   "webpack",
-                   "raw-loader", "extract-text-webpack-plugin",
-                   "file-loader",
-                   "css-loader",
-                   "style-loader",
-                   "sass-loader",
-                   "resolve-url-loader",
-                   "json5-loader", "json5",
-                   "worker-loader",
-                   "node-sass",
-                   "copy-webpack-plugin",
-                   "imports-loader",
-               ];
-var depVersions = {
-    "json5": "0.4",
-    "extract-text-webpack-plugin": "2.0.0-rc.3",
-}
+var baseDeps = {
+                   "copy-webpack-plugin": "@4.0.1",
+                   "css-loader": "@0.27.3",
+                   "extract-text-webpack-plugin": "@2.0.0-rc.3",
+                   "file-loader": "@0.10.1",
+                   "json5": "@0.4.0",
+                   "json5-loader": "@1.0.1",
+                   "html-webpack-plugin": "@2.28.0",
+                   "imports-loader": "@0.7.1",
+                   "node-sass": "@4.5.0",
+                   "raw-loader": "@0.5.1",
+                   "resolve-url-loader": "@2.0.2",
+                   "sass-loader": "@6.0.3",
+                   "style-loader": "@0.13.2",
+                   "webpack": "@2.2.1",
+                   "worker-loader": "@0.8.0",
+               };
 
 function projectHasPackageJSON(ctx) {
     var path = ctx.requireCordovaModule("path"),
@@ -55,9 +54,9 @@ function projectHasRequiredDependencies(ctx, config) {
     var fs = ctx.requireCordovaModule("fs"),
         path = ctx.requireCordovaModule("path");
 
-    var deps = baseDeps.concat(require(path.join("..", "config", config, "dependencies.js")));
+    var deps = Object.assign({}, baseDeps, require(path.join("..", "config", config, "dependencies.js")));
 
-    var allDepsPresent = deps.reduce(function (acc, dep) {
+    var allDepsPresent = Object.keys(deps).reduce(function (acc, dep) {
         if (acc === false) { return acc; } // once one module is missing, don't check more
         try {
             // we count a module as present if it is in node_modules
@@ -75,12 +74,9 @@ function installRequiredDependencies(ctx, config) {
     var shell = ctx.requireCordovaModule("shelljs"),
         path = ctx.requireCordovaModule("path");
 
-    var deps = baseDeps.concat(require(path.join("..", "config", config, "dependencies.js")));
-    deps = deps.map(function(dep) {
-        if (depVersions[dep]) {
-            return dep + "@" + depVersions[dep];
-        }
-        return dep;
+    var deps = Object.assign({}, baseDeps, require(path.join("..", "config", config, "dependencies.js")));
+    deps = Object.keys(deps).map(function(dep) {
+        return dep + deps[dep];
     });
     return (shell.exec("npm install --save-dev " + deps.join(" ")).code === 0);
 }
