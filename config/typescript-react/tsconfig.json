@@ -3,7 +3,7 @@
         "allowJs": true,
         "target": "es5",
         "module": "es2015",
-        "inlineSourceMap": true,
+        "sourceMap": true,
         "jsx": "react",
         "lib": [
             "dom",
