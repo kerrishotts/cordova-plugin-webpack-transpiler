@@ -1,4 +1,22 @@
-# 2.2.4
+# 0.3.0
+
+ - When `--release` is used, `NODE_ENV` is set to `"production"` (when using internal release config)
+ - support jpeg extensions
+ - target index.html is generated with source index.html (in external mode)
+ - bundles are automatically injected into index.html
+ - css stylesheets are passed through the scss parser if scss is enabled
+ - css stylesheets in node_modules are bundled into vendor.css (vendor.css specifies output name)
+ - TypeScript sourcemaps should now work correctly
+ - Dependencies are pinned to specific versions
+
+TODO:
+
+ - vue config
+   - extract vue styles
+   - ensure script uses appropriate transpiler
+   - make sure images are handled correctly
+
+# 0.2.4
 
  - Copies `/*.*` from `www.src` to `www`, not just `*.html`.
  - Exposed default `extensions`
@@ -6,11 +24,11 @@
  - added the `--notransform` switch
  - Updated documentation
 
-# 2.2.3
+# 0.2.3
 
  - Changed wording when webpack & transpilation phase was over; may not always be typescript!
 
-# 2.2.2
+# 0.2.2
 
  - Fixed `assetsToCopy%` options to `config`
  - Tweaked `package.json`

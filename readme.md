@@ -270,13 +270,13 @@ The following are exported by `webpack.common.js`:
             css: dirs.css
         }
         ```
-    * `indexes` (optional): Provides source/destination mapping for varies entry and index files. Extended from the following form (`from` is relative to `sourcePaths.src`, and `to` is relative to `outputPaths.www`):
+    * `indexes` (optional): Provides source/destination mapping for varies entry and index files. Extended from the following form (`from` is relative to `sourcePaths.src`, and `to`/`js`/`css` is relative to `outputPaths.www`):
         ```js
         {
             scss: {from:, to:},
             es: {from:, to:},
             ts: {from:, to:},
-            vendor: {to:}
+            vendor: {js:, css:}
         }
         ```
     * `outputFile` (optional): Specifies the output filename for the JavaScript bundle. Defaults to `indexes.es.to + "bundle.js"` (or `bundle.ts` if using TypeScript).
