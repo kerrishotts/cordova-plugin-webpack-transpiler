@@ -61,6 +61,13 @@ module.exports = function(ctx) {
                 devtool: "none",
             });
             webpackConfig.plugins.push(
+                new webpack.DefinePlugin({
+                    "process.env": {
+                        NODE_ENV: '"production"'
+                    }
+                })
+            );
+            webpackConfig.plugins.push(
                 new webpack.optimize.UglifyJsPlugin({
                     compress: {
                         warnings: false
