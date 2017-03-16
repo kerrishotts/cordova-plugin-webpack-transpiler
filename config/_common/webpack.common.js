@@ -21,35 +21,36 @@ var path = require("path"),
     fs = require("fs"),
     webpack = require("webpack"),
     ExtractTextPlugin = require("extract-text-webpack-plugin"),
-    CopyWebpackPlugin = require("copy-webpack-plugin");
+    CopyWebpackPlugin = require("copy-webpack-plugin"),
+    HtmlWebpackPlugin = require("html-webpack-plugin");
 
 var extensions = [".js", ".ts", ".jsx", ".es", // typical JS extensions
-                  ".jsm", ".esm",               // jsm is node's ES6 module ext
-                  ".json",                      // some modules require json without an extension
-                  ".css", ".scss",              // CSS & SASS extensions
-                  "*"];                         // allow extensions on imports
+    ".jsm", ".esm",               // jsm is node's ES6 module ext
+    ".json",                      // some modules require json without an extension
+    ".css", ".scss",              // CSS & SASS extensions
+    "*"];                         // allow extensions on imports
 
 var dirs = {
-    css:      "css",
-    es:       "es",
+    css: "css",
+    es: "es",
     external: "www.src",
-    html:     "html",
-    img:      "img",
-    js:       "js",
-    lib:      "lib",
-    scss:     "scss",
-    ts:       "ts",
-    vendor:   "vendor",
-    www:      "www",
+    html: "html",
+    img: "img",
+    js: "js",
+    lib: "lib",
+    scss: "scss",
+    ts: "ts",
+    vendor: "vendor",
+    www: "www",
     aliases: {
-        Components:  "components",
+        Components: "components",
         Controllers: "controllers",
-        Models:      "models",
-        Pages:       "pages",
-        Routes:      "routes",
-        Templates:   "templates",
-        Utilities:   "util",
-        Views:       "views",
+        Models: "models",
+        Pages: "pages",
+        Routes: "routes",
+        Templates: "templates",
+        Utilities: "util",
+        Views: "views",
     }
 }
 
@@ -92,18 +93,21 @@ function config(options) {
         extensions = options.extensions,
         vendor = options.vendor,
         allowTypeScript = options.allowTypeScript || false,
-        allowScss = options.allowScss | false,
-        transpiler = options.transpiler || (allowTypeScript ? "ts-loader" : "babel-loader");
+        allowScss = options.allowScss || false,
+        transpiler = options.transpiler || (allowTypeScript ? "ts-loader" : "babel-loader"),
+        mode = options.mode || process.env.NODE_ENV || "development",
+        operatingMode = "external";
     var assetsToCopy = [];
 
     if (!src) {
         src = path.resolve(__dirname, dirs.external);
-        assetsToCopy = assetsToCopyIfSibling;
+        assetsToCopy = assetsToCopyIfExternal;
+        operatingMode = "external";
     }
     if (!fs.existsSync(src)) {
         src = path.resolve(__dirname, dirs.www);
-    } else {
-        assetsToCopy = assetsToCopyIfExternal;
+        assetsToCopy = assetsToCopyIfSibling;
+        operatingMode = "sibling"
     }
 
     /*
@@ -141,14 +145,15 @@ function config(options) {
         scss: { from: path.join(sourcePaths.scss, "styles.scss"), to: path.join(outputPaths.css, "bundle.css") },
         es: { from: path.join(sourcePaths.es, "index.js"), to: path.join(outputPaths.js, "bundle.js") },
         ts: { from: path.join(sourcePaths.ts, "index.ts"), to: path.join(outputPaths.js, "bundle.js") },
-    vendor: { to: path.join(outputPaths.js, "vendor.js") },
+        vendor: { js: path.join(outputPaths.js, "vendor.js"), css: path.join(outputPaths.css, "vendor.css") }
     });
 
     var usingTypeScript = allowTypeScript && fs.existsSync(path.resolve(sourcePaths.src, sourcePaths.ts));
 
     var jsEntryFile = usingTypeScript ? indexes.ts.from : indexes.es.from,
         sassEntryFile = indexes.scss.from,
-        extractSass = allowScss ? new ExtractTextPlugin(indexes.scss.to) : null;
+        extractSass = allowScss ? new ExtractTextPlugin(indexes.scss.to) : null,
+        extractVendorCss = new ExtractTextPlugin("css/vendor.css");
 
     if (!outputFile) {
         outputFile = usingTypeScript ? indexes.ts.to : indexes.es.to;
@@ -176,11 +181,11 @@ function config(options) {
         },
         resolve: {
             extensions: extensions ||
-                       [".js", ".ts", ".jsx", ".es", // typical JS extensions
-                        ".jsm", ".esm",               // jsm is node's ES6 module ext
-                        ".json",                      // some modules require json without an extension
-                        ".css", ".scss",              // CSS & SASS extensions
-                        "*"],                         // allow extensions on imports
+            [".js", ".ts", ".jsx", ".es", // typical JS extensions
+                ".jsm", ".esm",               // jsm is node's ES6 module ext
+                ".json",                      // some modules require json without an extension
+                ".css", ".scss",              // CSS & SASS extensions
+                "*"],                         // allow extensions on imports
             modules: [
                 path.resolve(sourcePaths.src, dirs.es, "lib"),
                 path.resolve(sourcePaths.src, dirs.es, "vendor"),
@@ -210,36 +215,64 @@ function config(options) {
         module: {
             rules: [
                 { test: /\.(html|txt)$/, use: "raw-loader" },
-                { test: /\.(png|jpg|svg|gif)$/, use: ["file-loader"]},
+                { test: /\.(png|jpe?g|svg|gif|eot|ttf|woff|woff2)$/, use: ["file-loader"] },
                 { test: /\.(json|json5)$/, use: "json5-loader" },
                 {
-                    test: /\.scss$/,
+                    test: extractSass ? /\.s?css$/ : /\.css$/,
+                    exclude: /node_modules\/.*\.css$/,
                     use: extractSass.extract({
                         fallback: "style-loader",
+                        use: ((function () {
+                            var arr = [
+                                { loader: "css-loader?sourceMap=true" },
+                                { loader: "resolve-url-loader?sourceMap=true" },
+                            ];
+                            if (extractSass) {
+                                arr.push({ loader: "sass-loader?sourceMap=true" });
+                            }
+                            return arr;
+                        })())
+                    })
+                },
+                {
+                    test: /node_modules\/.*\.css$/,
+                    exclude: /node_modules/,
+                    use: extractVendorCss.extract({
+                        fallback: "style-loader",
                         use: [
-                                { loader: "css-loader?sourceMap=true&import=false&url=false"},
-                                { loader: "resolve-url-loader?sourceMap=true"},
-                                { loader: "sass-loader?sourceMap=true"}
-                                ]
+                            { loader: "css-loader?sourceMap=true" },
+                            { loader: "resolve-url-loader?sourceMap=true" },
+                        ]
                     })
                 },
                 {
                     test: /\.(js|jsx|ts|tsx)$/,
-                    use: [ transpiler + (allowTypeScript ? (usingTypeScript ? "" : "?entryFileIsJs") : "") ],
+                    use: [transpiler + (allowTypeScript ? (usingTypeScript ? "" : "?entryFileIsJs") : "")],
                     exclude: /node_modules/
                 },
             ]
         },
-        plugins: (function() {
-            var plugins = [];
+        plugins: (function () {
+            var plugins = [
+                new CopyWebpackPlugin(assetsToCopy),
+            ];
+
+            if (operatingMode === "external") {
+                plugins.push(new HtmlWebpackPlugin({
+                    filename: "index.html",
+                    template: "index.html",
+                    inject: true,
+                    chunksSortMode: "dependency"
+                }));
+            }
+
             if (extractSass) {
                 plugins.push(extractSass);
             }
-            plugins.push(new CopyWebpackPlugin(assetsToCopy));
             if (vendor.length > 0) {
                 plugins.push(new webpack.optimize.CommonsChunkPlugin({
                     name: "vendor",
-                    filename: indexes.vendor.to
+                    filename: indexes.vendor.js
                 }));
             }
             return plugins;
