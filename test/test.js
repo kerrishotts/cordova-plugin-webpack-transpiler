@@ -55,7 +55,7 @@ function copyAssets(whichExample, mode) {
 }
 
 function checkTranspileOutputs(config, r, shouldHaveInited) {
-    var regexp, matches, outputs;
+    var regexp, matches, outputs = [];
 
     // make sure configuration is present
     expect(ls(path.join(tmp, PROJECT_NAME, "webpack.config.js")).length).to.be.greaterThan(0);
