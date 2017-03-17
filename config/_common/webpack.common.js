@@ -240,7 +240,6 @@ function config(options) {
                 },
                 {
                     test: /node_modules\/.*\.css$/,
-                    exclude: /node_modules/,
                     use: extractVendorCss.extract({
                         fallback: "style-loader",
                         use: [
