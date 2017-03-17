@@ -62,6 +62,7 @@ Sibling     |Configuration |      Entry Point           | Output
 TypeScript  | `typescript` | `www/ts/index.ts`          | `www/js/bundle.js`
 ES2015      | `typescript` | `www/es/index.js`          | `www/js/bundle.js`
             | `babel`      | `www/es/index.js`          | `www/js/bundle.js`
+CSS         | either       | `www/css/styles.css`       | `www/css/bundle.css`
 SCSS        | either       | `www/scss/styles.scss`     | `www/css/bundle.css`
 
 External    |Configuration |      Entry Point           | Output
@@ -69,6 +70,7 @@ External    |Configuration |      Entry Point           | Output
 TypeScript  | `typescript` | `www.src/ts/index.ts`      | `www/js/bundle.js`
 ES2015      | `typescript` | `www.src/es/index.js`      | `www/js/bundle.js`
             | `babel`      | `www.src/es/index.js`      | `www/js/bundle.js`
+CSS         | either       | `www.src/css/styles.css`   | `www/css/bundle.css`
 SCSS        | either       | `www.src/scss/styles.scss` | `www/css/bundle.css`
 Misc        | either       | `www.src/*.*`              | `www/*.*`
 CSS         | either       | `www.src/css/**/*`         | `www/css/**/*`
@@ -101,7 +103,7 @@ The output indicates that four assets were generated. (The paths are relative to
 
 > **Note**: If you are using the sibling project structure, an `after prepare` step will execute. This step removes duplicate files in the resulting platform build artifacts so that your original source files aren't needlessly copied to your app bundles.
 
-Once you've successfully executed a `prepare` phase, you'll need to update your `index.html` file to reference `js/bundle.js` and `css/bundle.css` instead of your original entry files.
+If you are using the `sibling` file structure, you'll need to update your `index.html` file to reference `js/bundle.js` and `css/bundle.css` instead of your original entry files. Otherwise, remove the original entry file source &mdash; the plugin will inject all the other dependencies as needed.
 
 ### Debug vs Release
 
@@ -149,12 +151,13 @@ Babel, External structure       | [./example-babel-ext](./example-ts-ext)
 
 The `webpack.config.js` files come with some useful loaders:
 
-file pattern        | loader       | example
--------------------:|:------------:|:-----------------------------
-*.json; *.json5     | json5-loader | `import pkg from "../../package.json";`
-*.html; *.txt       | raw-loader   | `import template from "../templates/list-item.html";`
-*.png; *.jpg; *.svg | file-loader  | `import icon from "../img/icon.svg";`
-&mdash;             | imports-loader |  None; you must specify the rules yourself
+file pattern                  | loader       | example
+-----------------------------:|:------------:|:-----------------------------
+*.json; *.json5               | json5-loader | `import pkg from "../../package.json";`
+*.html; *.txt                 | raw-loader   | `import template from "../templates/list-item.html";`
+*.png; *.jp(e)g; *.svg        | file-loader  | `import icon from "../img/icon.svg";`
+*.eot; *.ttf; *.woff; *.woff2 | file-loader  | `import icon from "../img/icon.svg";`
+&mdash;                       | imports-loader |  None; you must specify the rules yourself
 
 If a file pattern you need to import isn't matched with a loader, you can specify the loader directly:
 
@@ -218,6 +221,7 @@ The following are exported by `webpack.common.js`:
 * `config(options)`: returns a webpack configuration based on `options`, as follows:
     * `src` (optional): Source directory; defaults to `$PROJECT_ROOT/www.src` if present, or `$PROJECT_ROOT/www` otherwise.
     * `extensions` (optional): Extensions that can be left off in `import` statements. Defaults to:
+
         ```js
         [".js", ".ts", ".jsx", ".es", // typical JS extensions
         ".jsm", ".esm",               // jsm is node's ES6 module ext
@@ -225,7 +229,9 @@ The following are exported by `webpack.common.js`:
         ".css", ".scss",              // CSS & SASS extensions
         "*"];                         // allow extensions on imports
         ```
+
     * `dirs` (required): directory mappings. A default mapping is exported as `defaults.dirs` and looks like follows:
+
         ```js
         {
             css:      "css",
@@ -240,20 +246,24 @@ The following are exported by `webpack.common.js`:
             vendor:   "vendor",
             www:      "www",
             aliases: {
-                Components:  "components",
-                Controllers: "controllers",
-                Models:      "models",
-                Pages:       "pages",
-                Routes:      "routes",
-                Templates:   "templates",
-                Utilities:   "util",
-                Views:       "views",
+                Lib: "lib",
+                Vendor: "vendor",
+                Components:  "$JS/components",
+                Controllers: "$JS/controllers",
+                Models:      "$JS/models",
+                Pages:       "$JS/pages",
+                Routes:      "$JS/routes",
+                Templates:   "$JS/templates",
+                Utilities:   "$JS/util",
+                Views:       "$JS/views",
             }
         }
         ```
 
-        * The `alias` key is used to add additional module resolution aliases. In addition, `$LIB`, `Lib`, `$VENDOR` and `Vendor` point to `dirs.lib` and `dirs.vendor`.
+        * The `alias` key is used to add additional module resolution aliases.
+        * `$JS/` is used to point at the `dirs.es`/`dirs.ts` path
     * `sourcePaths` (optional): Provides the names of the source paths that can be transformed. Any missing paths are copied from the default, as follows:
+
         ```js
         {
             src: options.src,
@@ -262,7 +272,9 @@ The following are exported by `webpack.common.js`:
             scss: dirs.scss
         }
         ```
+
     * `outputPaths` (optional): Provides the names of the output paths. Any missing paths are copied from the default, as follows:
+
         ```js
         {
             www: dirs.www,
@@ -270,28 +282,35 @@ The following are exported by `webpack.common.js`:
             css: dirs.css
         }
         ```
+
     * `indexes` (optional): Provides source/destination mapping for varies entry and index files. Extended from the following form (`from` is relative to `sourcePaths.src`, and `to`/`js`/`css` is relative to `outputPaths.www`):
+
         ```js
         {
-            scss: {from:, to:},
+            css: {from:, to:}
+            scss: {from:, to:},         # used if allowScss is true
             es: {from:, to:},
             ts: {from:, to:},
             vendor: {js:, css:}
         }
         ```
+
     * `outputFile` (optional): Specifies the output filename for the JavaScript bundle. Defaults to `indexes.es.to + "bundle.js"` (or `bundle.ts` if using TypeScript).
     * `vendor` (required): Modules to output as part of the `vendor` chunk. If none, pass `[]`.
     * `entryFiles` (optional): Specifies the entry files for the app. If not provided, defaults to (substituting `ts` if using TypeScript):
+
         ```js
         {
-            app: ["./" + indexes.es.from, "./" + indexes.scss.from],
+            app: ["./" + indexes.es.from, "./" + indexes.(s)css.from],
             vendor: vendor  // if vendor has length > 0
         }
         ```
+
     * `allowTypeScript` (optional): Indicates if typescript is permitted. This enables extra extensions and configuration for the TypeScript compiler. Defaults to `false`.
     * `allowScss` (optional): Indicates if Scss is permitted. Defaults to `false`.
     * `transpiler` (optional): Indicates the webpack loader to use for JavaScript files. If `allowTypeScript` is `true`, defaults to `ts-loader`, otherwise defaults to `babel-loader`.
     * `assetsToCopyIfExternal` (required): Indicates the assets to copy from `dirs.external` to `dirs.www`. A default list is exported under `defaults.assetsToCopyIfExternal`, and looks like follows:
+
         ```js
         [
             { from: "*.html" },
@@ -303,7 +322,10 @@ The following are exported by `webpack.common.js`:
             { from: dirs.html + "/**/*" },
         ]
         ```
+
     * `assetsToCopyIfSibling` (required): Same as `assetsToCopyIfExternal`, but applies if the source directory is the `dirs.www` folder instead of `dirs.external`. The exported default (`defaults.assetsToCopyIfSibling`) is `[]`.
+    * `cssLoaderFallback` (optional): defaults to `style-loader`
+    * `devtool` (optional): defaults to `inline-source-map` (overridden in release mode to `none`)
 * `defaults`: useful defaults, as follows
     * `dirs`: exports default directory mappings
     * `vendor`: exports default vendor modules
