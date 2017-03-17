@@ -218,7 +218,7 @@ function config(options) {
                 {
                     test: /\.(png|jpe?g|svg|gif|eot|ttf|woff|woff2)$/,
                     use: ["file-loader?name=[path][name].[ext]&emitFile=" +
-                      operatingMode === "external" ? "true" : "false"]
+                      (operatingMode === "external" ? "true" : "false")]
                 },
                 { test: /\.(json|json5)$/, use: "json5-loader" },
                 {
