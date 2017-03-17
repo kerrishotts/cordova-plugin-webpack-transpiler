@@ -84,6 +84,11 @@ function checkTranspileOutputs(config, r, shouldHaveInited) {
     expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "es", "*.*")).length).to.be.equal(0);
     expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "scss", "*.*")).length).to.be.equal(0);
 
+    require("tree-directory").tree(path.join(tmp, PROJECT_NAME, "www"))
+    .then(function(res) {
+        console.log(res);
+    });
+
     // check for correct output -- did anything get emitted? Was it big enough?
     regexp = /^\s*([\w\.\/]+)\s+([\d\.]+)\s(g|m|k)B\s+(\d)*\s+\[(\w+)\].*/gmi;
     while ((matches = regexp.exec(r.stdout)) !== null) {

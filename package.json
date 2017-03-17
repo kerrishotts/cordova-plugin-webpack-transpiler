@@ -4,7 +4,16 @@
   "description": "Transpile and bundle with WebPack",
   "cordova": {
     "id": "cordova-plugin-webpack-transpiler",
-    "platforms": ["ios", "osx", "windows", "wp8", "android", "ubuntu", "blackberry10", "browser"]
+    "platforms": [
+      "ios",
+      "osx",
+      "windows",
+      "wp8",
+      "android",
+      "ubuntu",
+      "blackberry10",
+      "browser"
+    ]
   },
   "repository": {
     "type": "git",
@@ -38,7 +47,8 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "shelljs": "^0.7.6"
+    "shelljs": "^0.7.6",
+    "tree-directory": "^0.1.0"
   },
   "scripts": {
     "test": "mocha"

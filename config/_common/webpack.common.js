@@ -217,7 +217,8 @@ function config(options) {
                 { test: /\.(html|txt)$/, use: "raw-loader" },
                 {
                     test: /\.(png|jpe?g|svg|gif|eot|ttf|woff|woff2)$/,
-                    use: ["file-loader?name=[path][name].[ext]"]
+                    use: ["file-loader?name=[path][name].[ext]&emit=" +
+                      operatingMode === "external" ? "true" : "false"]
                 },
                 { test: /\.(json|json5)$/, use: "json5-loader" },
                 {
