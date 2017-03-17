@@ -1,6 +1,6 @@
 module.exports = {
     "babel-loader": "@6.3.2",
-    "babel-core": "@6.32.1",
+    "babel-core": "@6.23.1",
     "babel-polyfill": "@6.23.0",
     "babel-preset-es2015": "@6.22.0",
     "babel-preset-es2016": "@6.22.0",
