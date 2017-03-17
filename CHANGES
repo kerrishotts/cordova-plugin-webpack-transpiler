@@ -9,6 +9,8 @@
  - css stylesheets in node_modules are bundled into vendor.css (vendor.css specifies output name)
  - TypeScript sourcemaps should now work correctly
  - Dependencies are pinned to specific versions
+ - fix defaults
+ - initial typescript-f7-vue config
 
 TODO:
 
