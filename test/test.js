@@ -55,7 +55,7 @@ function copyAssets(whichExample, mode) {
 }
 
 function checkTranspileOutputs(config, r, shouldHaveInited) {
-    var regexp, matches;
+    var regexp, matches, outputs;
 
     // make sure configuration is present
     expect(ls(path.join(tmp, PROJECT_NAME, "webpack.config.js")).length).to.be.greaterThan(0);
@@ -85,11 +85,17 @@ function checkTranspileOutputs(config, r, shouldHaveInited) {
     expect(ls(path.join(tmp, PROJECT_NAME, "platforms", "android", "assets", "www", "scss", "*.*")).length).to.be.equal(0);
 
     // check for correct output -- did anything get emitted? Was it big enough?
-    regexp = /Chunk\ Names\s+js\/bundle\.js\s*([\d|\.]+)\s*kB.*emitted/gmi;
-    matches = regexp.exec(r.stdout);
-    expect(matches).to.not.be.null;
-    if (matches) {
-        expect(parseInt(matches[1], 10)).to.be.greaterThan(0.5);
+    regexp = /^\s*([\w\.\/]+)\s+([\d\.]+)\s(g|m|k)B\s+(\d)*\s+\[(\w+)\].*/gmi;
+    while ((matches = regexp.exec(r.stdout)) !== null) {
+        outputs.push(matches.slice(1));
+    }
+    expect(outputs).to.not.be.null;
+
+    // check that we have the desired outputs
+    if (outputs) {
+        expect(outputs.reduce(function(acc, v) {
+            return v[0] === "js/bundle.js" ? parseInt(v[1], 10) : acc;
+        }, 0)).to.be.greaterThan(0.5);
     }
 
     // did we init correctly?
