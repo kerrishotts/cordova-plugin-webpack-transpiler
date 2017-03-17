@@ -185,8 +185,15 @@ describe ("Black box tests", function () {
                 }
             });
             it("Should be able to transpile", function() { transpile(test.example, test.config, test.mode); });
+            it("render tree 1", function(done) {
+                treeDirectory(path.join(tmp, PROJECT_NAME, "www"))
+                .then(function(res) {
+                    console.log(res);
+                    done();
+                });
+            });
             it("Should be able to transpile again (no init)", function() { transpile(test.example, test.config, test.mode, false); });
-            it("render tree", function(done) {
+            it("render tree 2", function(done) {
                 treeDirectory(path.join(tmp, PROJECT_NAME, "www"))
                 .then(function(res) {
                     console.log(res);
