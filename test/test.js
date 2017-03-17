@@ -51,7 +51,7 @@ function copyAssets(whichExample, mode) {
         cp("-rf", path.join(pluginDir, whichExample, "www", "es"), path.join(tmp, PROJECT_NAME, "www"));
         cp("-rf", path.join(pluginDir, whichExample, "www", "scss"), path.join(tmp, PROJECT_NAME, "www"));
     } else {
-        cp("-rf", path.join(pluginDir, whichExample, "www.src"), path.join(tmp, PROJECT_NAME, "www.src"));
+        cp("-rf", path.join(pluginDir, whichExample, "www.src"), path.join(tmp, PROJECT_NAME));
     }
 }
 
