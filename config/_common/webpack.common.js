@@ -250,6 +250,7 @@ function config(options) {
                     exclude: /node_modules\/.*\.css$/,
                     use: extractCss.extract({
                         fallback: cssFallbackLoader,
+                        publicPath: "../",
                         use: ((function () {
                             var arr = [
                                 { loader: "css-loader?sourceMap=true" },
@@ -267,6 +268,7 @@ function config(options) {
                     test: /node_modules\/.*\.css$/,
                     use: extractVendorCss.extract({
                         fallback: cssFallbackLoader,
+                        publicPath: "../",
                         use: [
                             { loader: "css-loader?sourceMap=true" },
                             { loader: "resolve-url-loader?sourceMap=true" },

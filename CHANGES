@@ -1,3 +1,7 @@
+# 0.3.1
+
+ - fix incorrect urls in CSS bundle
+
 # 0.3.0
 
  - When `--release` is used, `NODE_ENV` is set to `"production"` (when using internal release config)
@@ -11,13 +15,6 @@
  - Dependencies are pinned to specific versions
  - fix defaults
  - initial typescript-f7-vue config
-
-TODO:
-
- - vue config
-   - extract vue styles
-   - ensure script uses appropriate transpiler
-   - make sure images are handled correctly
 
 # 0.2.4
 

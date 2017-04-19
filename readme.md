@@ -184,10 +184,10 @@ html/**/*
 The default configurations add the following module resolution paths (relative to project root):
 
 ```
-(www|src.www)/(es|ts)/lib
-(www|src.www)/(es|ts)/vendor
-(www|src.www)/lib
-(www|src.www)/vendor
+(www|www.src)/(es|ts)/lib
+(www|www.src)/(es|ts)/vendor
+(www|www.src)/lib
+(www|www.src)/vendor
 node_modules
 ```
 
@@ -197,18 +197,18 @@ The default configurations add the following aliases, which may be useful in res
 
 Alias            | Path
 ----------------:|:--------------------------------------
-`$LIB`           | `(www|src.www)/lib`
-`Lib`            | `(www|src.www)/lib`
-`$VENDOR`        | `(www|src.www)/vendor`
-`Vendor`         | `(www|src.www)/vendor`
-`Components`     | `(www|src.www)/(es|ts)/components`
-`Controllers`    | `(www|src.www)/(es|ts)/controllers`
-`Models`         | `(www|src.www)/(es|ts)/models`
-`Pages`          | `(www|src.www)/(es|ts)/pages`
-`Routes`         | `(www|src.www)/(es|ts)/routes`
-`Templates`      | `(www|src.www)/(es|ts)/templates`
-`Utilities`      | `(www|src.www)/(es|ts)/utilities`
-`Views`          | `(www|src.www)/(es|ts)/views`
+`$LIB`           | `(www|www.src)/lib`
+`Lib`            | `(www|www.src)/lib`
+`$VENDOR`        | `(www|www.src)/vendor`
+`Vendor`         | `(www|www.src)/vendor`
+`Components`     | `(www|www.src)/(es|ts)/components`
+`Controllers`    | `(www|www.src)/(es|ts)/controllers`
+`Models`         | `(www|www.src)/(es|ts)/models`
+`Pages`          | `(www|www.src)/(es|ts)/pages`
+`Routes`         | `(www|www.src)/(es|ts)/routes`
+`Templates`      | `(www|www.src)/(es|ts)/templates`
+`Utilities`      | `(www|www.src)/(es|ts)/utilities`
+`Views`          | `(www|www.src)/(es|ts)/views`
 
 # Overriding the configuration
 
